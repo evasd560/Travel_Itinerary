@@ -2475,7 +2475,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const TILE_PROVIDERS = [
     {
       name: "OpenStreetMap",
-      url: "https://blocked.invalid/{z}/{x}/{y}.png",
+      url: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
       options: { maxZoom: 19, attribution: "© OpenStreetMap" }
     },
     {
