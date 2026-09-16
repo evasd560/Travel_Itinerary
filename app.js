@@ -508,12 +508,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <span class="legend-glyph">${MAP_PIN_EMOJI[key]}</span>
         <span class="legend-label">${label}</span>
       </li>
-    `).join("") + `
-      <li>
-        <span class="legend-glyph legend-glyph-pin"><span>1</span></span>
-        <span class="legend-label">Anything else</span>
-      </li>
-    `;
+    `).join("");
 
     const setOpen = (open) => {
       panel.hidden = !open;
