@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:commons.wikimedia.org)",
+      "WebFetch(domain:www.latlong.net)",
+      "WebFetch(domain:en.wikipedia.org)",
+      "WebFetch(domain:upload.wikimedia.org)",
+      "Bash(curl -s \"https://commons.wikimedia.org/w/api.php?action=query&titles=File:Thang%20Co%20\\(Cattle%20Intestines%20Soup\\).jpg|File:Sapa%20Market%20-%2050330667606.jpg|File:Sapa,%20market%20\\(6223848870\\).jpg&prop=imageinfo&iiprop=url|extmetadata&format=json\")",
+      "Bash(python3 -c ' *)",
+      "Bash(curl -s -H 'User-Agent: TravelApp/1.0' 'https://commons.wikimedia.org/w/api.php?action=query&format=json&prop=imageinfo&iiprop=url|size&iiurlwidth=1000&titles=__CMDSUB_OUTPUT__')",
+      "Bash(curl -s -H 'User-Agent: TravelItineraryApp/1.0' \"https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Bat-Trang-Ceramic-Village16.jpg/800px-Bat-Trang-Ceramic-Village16.jpg\")",
+      "Bash(curl -s -o /dev/null -w \"orig:%{http_code} %{content_type} %{size_download}\\\\n\" -H 'User-Agent: TravelItineraryApp/1.0' \"https://upload.wikimedia.org/wikipedia/commons/e/ea/Bat-Trang-Ceramic-Village16.jpg\")",
+      "Bash(curl -s -H 'User-Agent: TravelItineraryApp/1.0' \"https://commons.wikimedia.org/w/api.php?action=query&format=json&list=categorymembers&cmtitle=Category:H%C3%A0ng%20Gai%20Street,%20Hanoi&cmlimit=50&cmtype=file\")",
+      "Bash(curl -s -H 'User-Agent: TravelItineraryApp/1.0' \"https://commons.wikimedia.org/w/api.php?action=query&format=json&list=search&srnamespace=6&srlimit=12&srsearch=silk%20shop%20Hanoi%20Old%20Quarter\")"
+    ]
+  }
+}

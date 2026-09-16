@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detour — Travel Itinerary Planner</title>
+  <meta name="description" content="Discover top places, local dishes, restaurants, and unique activities in any location worldwide. Built with Gemini AI.">
+  <!-- Google Material Icons Pack CDN -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+  <!-- Leaflet (OpenStreetMap) for itinerary map pins -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="app-container">
+
+    <!-- TOP NAVIGATION BAR -->
+    <header class="top-nav">
+      <div class="top-nav-left">
+        <!-- The wordmark image replaces the fallback once assets/detour-logo.png exists -->
+        <div class="brand" id="brand">
+          <img class="brand-logo-img" id="brand-logo-img" src="assets/detour-logo.png" alt="Detour" hidden>
+          <span class="brand-logo-text" id="brand-logo-text">
+            <span class="brand-dot" aria-hidden="true"></span>Detour
+          </span>
+        </div>
+
+        <!-- Pinned + saved trip location tabs -->
+        <nav class="trip-tabs" id="trip-tabs">
+          <!-- Dynamically populated: pinned destination + cities with a saved itinerary -->
+        </nav>
+      </div>
+
+      <div class="top-nav-search">
+        <div class="search-box-container">
+          <span class="material-icons search-icon" style="font-size: 18px;">search</span>
+          <input type="text" id="search-input" class="search-input" placeholder="Search location (e.g. Hanoi, Tokyo, Rome)..." autocomplete="off">
+          <ul class="search-suggestions" id="search-suggestions"></ul>
+        </div>
+        <button class="search-btn" id="search-button">Search</button>
+      </div>
+
+      <div class="top-nav-right">
+        <button class="btn-add-new" id="add-new-btn" title="Add a place manually or extract from a link">
+          <span class="material-icons" style="font-size: 17px;">add</span>
+          <span>Add New</span>
+        </button>
+
+        <button class="icon-btn" id="api-status-badge" title="Gemini API key">
+          <span class="material-icons" style="font-size: 18px;">key</span>
+          <span class="icon-btn-dot" id="api-status-dot"></span>
+        </button>
+      </div>
+    </header>
+
+    <!-- MAIN TWO-COLUMN BODY LAYOUT -->
+    <div class="main-layout">
+
+      <!-- CENTER AREA: Recommendations -->
+      <main class="main-content">
+
+        <!-- City Hero with cover photo -->
+        <section class="city-hero" id="city-hero">
+          <div class="city-hero-media" id="city-hero-media">
+            <div class="city-hero-scrim"></div>
+            <button class="cover-edit-btn" id="cover-edit-btn" title="Change cover photo">
+              <span class="material-icons" style="font-size: 17px;">edit</span>
+            </button>
+            <div class="city-hero-content">
+              <span class="city-eyebrow">Destination</span>
+              <h1 class="city-title" id="hero-title">Select a Destination</h1>
+              <p class="city-description" id="hero-desc">Choose a destination to build your ideal itinerary.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Primary anchor chips (category) -->
+        <nav class="anchor-chips" id="category-filter-bar">
+          <button class="anchor-chip active" data-category="all">
+            <span class="material-icons">apps</span><span>All</span>
+          </button>
+          <button class="anchor-chip" data-category="visit">
+            <span class="material-icons">account_balance</span><span>Landmarks</span>
+          </button>
+          <button class="anchor-chip" data-category="eat">
+            <span class="material-icons">restaurant</span><span>Cafes &amp; Restaurants</span>
+          </button>
+          <button class="anchor-chip" data-category="activity">
+            <span class="material-icons">directions_run</span><span>Activities</span>
+          </button>
+          <button class="anchor-chip" data-category="dish">
+            <span class="material-icons">ramen_dining</span><span>Dishes to Try</span>
+          </button>
+          <button class="anchor-chip" data-category="shopping">
+            <span class="material-icons">shopping_bag</span><span>Shopping</span>
+          </button>
+          <button class="anchor-chip anchor-chip-happening" data-category="happening">
+            <span class="material-icons">event</span><span>Seasonal &amp; Events</span>
+          </button>
+        </nav>
+
+        <!-- Secondary filters: region, location, flags -->
+        <div class="filter-bar-secondary">
+          <div class="filter-row-top">
+            <div class="filter-group" id="zone-filter-bar">
+              <!-- Region chips injected dynamically -->
+            </div>
+            <div class="filter-group">
+              <button class="filter-chip toggle-chip" id="filter-socials-btn">🔥 Popular on Socials</button>
+              <button class="filter-chip toggle-chip" id="filter-bookmarks-btn">❤️ Bookmarks</button>
+            </div>
+          </div>
+          <!-- Locations get their own line and scroll sideways -->
+          <div class="filter-group" id="location-filter-bar">
+            <!-- Location chips injected dynamically -->
+          </div>
+        </div>
+
+        <!-- Recommendations Grid -->
+        <section class="recommendations-grid" id="recommendations-grid">
+          <!-- Render cards dynamically -->
+        </section>
+
+      </main>
+
+      <!-- RIGHT SIDEBAR: Itinerary Planner -->
+      <aside class="planner-sidebar" id="planner-sidebar">
+        <div class="planner-resize-handle" id="planner-resize-handle" title="Drag to resize"></div>
+        <div class="planner-header">
+          <h2 class="planner-title">My Itinerary</h2>
+          <button class="icon-btn planner-collapse-btn" id="planner-collapse-btn" title="Collapse itinerary">
+            <span class="material-icons" style="font-size: 18px;">chevron_right</span>
+          </button>
+        </div>
+
+        <div class="planner-body" id="planner-body">
+          <!-- Desktop: itinerary left, map right, draggable divider between.
+               Mobile: the map stacks on top (DOM order), the rest below. -->
+          <div class="plan-split" id="plan-split">
+
+          <div class="plan-map-col" id="plan-map-col">
+          <!-- Map: always visible, right under the title -->
+          <div class="planner-map-section">
+            <div class="itinerary-map-container" id="itinerary-map"></div>
+            <button class="map-expand-btn" id="map-expand-btn" title="Expand map">
+              <span class="material-icons" style="font-size: 16px;">open_in_full</span>
+            </button>
+            <button class="map-addpin-btn" id="map-addpin-btn" title="Add a place by link or name">
+              <span class="material-icons" style="font-size: 18px;">add_location_alt</span>
+            </button>
+
+            <!-- Map key, drawn as an old chart's legend cartouche -->
+            <button class="map-legend-btn" id="map-legend-btn" aria-expanded="false"
+                    aria-controls="map-legend" title="What the symbols mean">
+              <span class="material-icons" style="font-size: 16px;">info</span>
+            </button>
+            <div class="map-legend" id="map-legend" hidden>
+              <div class="map-legend-inner">
+                <div class="map-legend-title">Map Key</div>
+                <div class="map-legend-rule"></div>
+                <ul class="map-legend-list" id="map-legend-list"></ul>
+                <div class="map-legend-foot">Tap any pin for details</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Opens only from the pin button on the map -->
+          <div class="map-add-location" id="map-add-location" style="display: none;">
+            <div class="map-add-field">
+              <span class="material-icons">search</span>
+              <input type="text" id="custom-location-input" placeholder="Paste a Google Maps link or place name...">
+            </div>
+            <button class="map-add-submit" id="custom-location-add-btn" title="Add this place">
+              <span class="material-icons" style="font-size: 18px;">add</span>
+            </button>
+          </div>
+          </div><!-- /plan-map-col -->
+
+          <div class="plan-split-handle" id="plan-split-handle" title="Drag to resize"></div>
+
+          <div class="plan-main-col" id="plan-main-col">
+          <!-- Trip length, dates, and the two date-dependent CTAs share one band -->
+          <div class="trip-row">
+          <!-- Duration and dates read as one compact bar rather than a tall card -->
+          <div class="trip-duration-card">
+            <div class="trip-bar-group">
+              <span class="trip-bar-label">
+                <span class="material-icons">event</span><span>Duration</span>
+              </span>
+              <div class="trip-duration-control">
+                <button class="stepper-btn" id="duration-minus" title="Fewer days">&minus;</button>
+                <input type="number" id="trip-duration-select" class="trip-duration-input" min="1" max="31" value="3">
+                <button class="stepper-btn" id="duration-plus" title="More days">+</button>
+              </div>
+              <span class="trip-duration-unit">days</span>
+            </div>
+
+            <span class="trip-bar-divider" aria-hidden="true"></span>
+
+            <div class="trip-bar-group trip-bar-dates">
+              <span class="trip-bar-label">
+                <span class="material-icons">date_range</span><span>Dates</span>
+              </span>
+              <input type="date" id="trip-start-date" class="trip-date-input" title="Start date">
+              <span class="trip-dates-end" id="trip-end-date">Add a start date</span>
+            </div>
+          </div>
+          </div><!-- /trip-row -->
+
+          <!-- Plan-by tabs share their line with the itinerary's own actions -->
+          <div class="plan-mode-row">
+            <span class="plan-mode-label">Plan by</span>
+            <div class="segmented" id="plan-mode-toggle">
+              <button class="segmented-btn active" data-mode="day">Day</button>
+              <button class="segmented-btn" data-mode="week">Week</button>
+            </div>
+
+            <!-- Events, weather, reset and export travel together -->
+          <div class="planner-actions-row" id="planner-actions-row">
+            <div class="happenings-row" id="happenings-row" style="display: none;">
+              <button class="happenings-btn" id="find-happenings-btn">
+                <span class="material-icons" style="font-size: 15px;">auto_awesome</span>
+                <span id="find-happenings-label">Discover Events</span>
+              </button>
+            </div>
+
+            <!-- Weather: collapsed to an icon; tap for the full outlook -->
+            <div class="weather-chip-row" id="weather-chip-row" style="display: none;">
+              <button class="weather-chip" id="weather-chip" title="Weather outlook for your dates">
+                <span class="material-icons" id="weather-chip-icon">wb_cloudy</span>
+                <span class="weather-chip-dot" id="weather-chip-dot"></span>
+              </button>
+            </div>
+
+            <span class="actions-divider" aria-hidden="true"></span>
+
+            <button class="planner-btn-mini" id="clear-itinerary-btn" title="Clear every day">Reset</button>
+            <button class="export-itinerary-btn" id="export-itinerary-btn" title="Download a styled PDF of your plan">
+              <span class="material-icons" style="font-size: 14px;">download</span>
+              <span>Export PDF</span>
+            </button>
+          </div>
+          </div>
+
+          <!-- Day / Week tabs navigator -->
+          <div class="day-navigator" id="day-navigator">
+            <!-- Buttons generated dynamically -->
+          </div>
+
+          <!-- Week-wise: split the week into named sections -->
+          <div class="week-section-row" id="week-section-row" style="display: none;">
+            <button class="planner-btn-mini" id="add-section-btn">
+              <span class="material-icons" style="font-size: 14px; vertical-align: middle;">playlist_add</span>
+              <span>Add section</span>
+            </button>
+          </div>
+
+          <!-- Itinerary list container -->
+          <div class="itinerary-list-container" id="itinerary-list">
+            <!-- Render itinerary items dynamically -->
+          </div>
+
+          </div><!-- /plan-main-col -->
+
+          </div><!-- /plan-split -->
+        </div>
+      </aside>
+
+      <!-- Collapsed rail: click to reopen the itinerary -->
+      <button class="planner-rail" id="planner-rail" style="display: none;" title="Open itinerary">
+        <span class="material-icons" style="font-size: 18px;">chevron_left</span>
+        <span class="planner-rail-text">My Itinerary</span>
+        <span class="planner-rail-count" id="planner-rail-count">0</span>
+      </button>
+
+    </div>
+
+    <!-- Floating mode switch: Explore (browse) vs Plan (itinerary) -->
+    <div class="view-switch" id="view-switch" role="tablist" aria-label="View mode">
+      <button class="view-switch-btn active" data-view="explore" role="tab" aria-selected="true">
+        <span class="material-icons">travel_explore</span>
+        <span>Explore</span>
+      </button>
+      <button class="view-switch-btn" data-view="plan" role="tab" aria-selected="false">
+        <span class="material-icons">map</span>
+        <span>Plan</span>
+        <span class="view-switch-count" id="view-switch-count">0</span>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Settings dialog modal for Gemini API Key -->
+  <dialog id="settings-modal" class="glass-modal">
+    <div class="modal-header">
+      <h3 class="modal-title">Configure Gemini AI</h3>
+      <button class="modal-close-btn" id="close-settings-btn">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="info-alert">
+        <strong>Dynamic Search requires an API Key:</strong> Search for any destination in the world is generated live using Google's Gemini API. Get a key at the <a href="https://aistudio.google.com/" target="_blank" rel="noopener noreferrer">Google AI Studio</a>.
+      </div>
+      <div class="input-group">
+        <label for="gemini-api-key" class="input-label">Gemini API Key</label>
+        <input type="password" id="gemini-api-key" class="modal-input" placeholder="AIzaSy...">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" id="clear-key-btn">Remove Key</button>
+      <button class="btn-primary" id="save-key-btn">Save Settings</button>
+    </div>
+  </dialog>
+
+  <!-- Full detail for an itinerary entry -->
+  <dialog id="item-detail-modal" class="glass-modal" style="max-width: 520px; padding: 0; overflow: hidden;">
+    <div class="detail-photo" id="detail-photo">
+      <button class="modal-close-btn detail-close" id="close-detail-btn">&times;</button>
+    </div>
+    <div class="detail-body" id="detail-body">
+      <!-- Filled dynamically -->
+    </div>
+  </dialog>
+
+  <!-- Full weather outlook: this year's dates vs the same dates last year -->
+  <dialog id="weather-modal" class="glass-modal" style="max-width: 560px;">
+    <div class="modal-header">
+      <h3 class="modal-title">
+        <span class="material-icons" style="vertical-align: -5px; margin-right: 0.3rem;">wb_cloudy</span>
+        Weather outlook
+      </h3>
+      <button class="modal-close-btn" id="close-weather-modal-btn">&times;</button>
+    </div>
+    <div class="weather-modal-body" id="weather-modal-body">
+      <!-- Filled dynamically -->
+    </div>
+  </dialog>
+
+  <!-- Per-item weather nudge -->
+  <dialog id="weather-nudge-modal" class="glass-modal" style="max-width: 460px;">
+    <div class="modal-header">
+      <h3 class="modal-title" id="weather-nudge-title">Weather nudge</h3>
+      <button class="modal-close-btn" id="close-weather-nudge-btn">&times;</button>
+    </div>
+    <div class="weather-nudge-body" id="weather-nudge-body">
+      <!-- Filled dynamically -->
+    </div>
+  </dialog>
+
+  <!-- Expanded map view -->
+  <dialog id="map-expand-modal" class="map-modal">
+    <div class="map-modal-header">
+      <h3 class="modal-title" id="map-modal-title">Trip map</h3>
+      <button class="modal-close-btn" id="close-map-modal-btn">&times;</button>
+    </div>
+    <div class="map-modal-body" id="map-modal-body">
+      <!-- The live map element is moved in here while expanded -->
+    </div>
+  </dialog>
+
+  <!-- Trip-length change confirmation -->
+  <dialog id="duration-confirm-modal" class="glass-modal" style="max-width: 480px;">
+    <div class="modal-header">
+      <h3 class="modal-title" id="duration-confirm-title">Change trip length?</h3>
+      <button class="modal-close-btn" id="close-duration-confirm-btn">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p class="duration-confirm-text" id="duration-confirm-text"></p>
+      <div class="info-alert" id="duration-confirm-detail"></div>
+    </div>
+    <div class="modal-footer" style="flex-direction: column; gap: 0.5rem;">
+      <button class="btn-primary" id="duration-rebuild-btn" style="width: 100%;">Rebuild an optimal plan</button>
+      <button class="btn-secondary" id="duration-keep-btn" style="width: 100%;">Just change the length, keep my items</button>
+    </div>
+  </dialog>
+
+  <!-- Add New dialog: manual entry OR extract from a link -->
+  <dialog id="add-new-modal" class="glass-modal" style="max-width: 580px;">
+    <div class="modal-header">
+      <h3 class="modal-title">Add New</h3>
+      <button class="modal-close-btn" id="close-add-new-btn">&times;</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="segmented segmented-full" id="add-new-mode-toggle">
+        <button class="segmented-btn active" data-add-mode="manual">Add manually</button>
+        <button class="segmented-btn" data-add-mode="link">Extract from a link</button>
+      </div>
+
+      <!-- MANUAL ENTRY -->
+      <div id="add-manual-pane">
+        <div class="input-group">
+          <label for="manual-name" class="input-label">Name</label>
+          <input type="text" id="manual-name" class="modal-input" placeholder="e.g. Phong Nha Caves">
+        </div>
+        <div class="form-row">
+          <div class="input-group" style="flex: 1;">
+            <label for="manual-category" class="input-label">Type</label>
+            <select id="manual-category" class="modal-input">
+              <option value="visit">🏛️ Landmark</option>
+              <option value="eat">🍽️ Cafe / Restaurant</option>
+              <option value="activity">🏄 Activity</option>
+              <option value="dish">🍜 Dish to Try</option>
+              <option value="shopping">🛍️ Shopping</option>
+            </select>
+          </div>
+          <div class="input-group" style="flex: 1;">
+            <label for="manual-duration" class="input-label">Time needed</label>
+            <input type="text" id="manual-duration" class="modal-input" placeholder="e.g. 2h, Half Day">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="input-group" style="flex: 1;">
+            <label for="manual-location" class="input-label">Location (optional)</label>
+            <input type="text" id="manual-location" class="modal-input" placeholder="e.g. Hanoi">
+          </div>
+          <div class="input-group" style="flex: 1;">
+            <label for="manual-cost" class="input-label">Cost (optional)</label>
+            <input type="text" id="manual-cost" class="modal-input" placeholder="e.g. ₹500">
+          </div>
+        </div>
+        <div class="input-group">
+          <label for="manual-image" class="input-label">Image URL (optional)</label>
+          <input type="text" id="manual-image" class="modal-input" placeholder="Paste an image link...">
+        </div>
+        <div class="input-group">
+          <label for="manual-description" class="input-label">Description (optional)</label>
+          <textarea id="manual-description" class="modal-input" rows="3" placeholder="What makes it worth doing?"></textarea>
+        </div>
+        <div class="info-alert" id="manual-error-box" style="display: none; border-color: var(--primary); color: var(--primary);"></div>
+      </div>
+
+      <!-- LINK EXTRACTION -->
+      <div id="add-link-pane" style="display: none;">
+        <div class="info-alert">
+          Paste a link to a blog post, article, or listing page. Gemini reads it and pulls out the places, activities, dishes, and restaurants mentioned so you can pick which to add.
+        </div>
+        <div class="input-group">
+          <label for="import-url-input" class="input-label">Page URL</label>
+          <div class="form-row">
+            <input type="text" id="import-url-input" class="modal-input" style="flex: 1;" placeholder="https://...">
+            <button class="btn-primary" id="import-analyze-btn" style="white-space: nowrap;">Analyze</button>
+          </div>
+        </div>
+        <div class="info-alert" id="import-error-box" style="display: none; border-color: var(--primary); color: var(--primary);"></div>
+        <div id="import-results-list" class="import-results-list"></div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-primary" id="manual-save-btn" style="width: 100%;">Add to Recommendations</button>
+      <button class="btn-primary" id="import-add-selected-btn" style="display: none; width: 100%;">Add Selected to Recommendations</button>
+    </div>
+  </dialog>
+
+  <!-- Edit-card dialog: override a card's image and description (also used for the city cover) -->
+  <dialog id="edit-card-modal" class="glass-modal">
+    <div class="modal-header">
+      <h3 class="modal-title" id="edit-modal-title">Edit Card</h3>
+      <button class="modal-close-btn" id="close-edit-modal-btn">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="input-group">
+        <label for="edit-image-url" class="input-label">Image URL</label>
+        <input type="text" id="edit-image-url" class="modal-input" placeholder="Paste an image link (e.g. from Google Images)...">
+      </div>
+      <div class="edit-paste-zone" id="edit-paste-zone" tabindex="0">
+        <img id="edit-image-preview" class="edit-image-preview" style="display: none;" alt="Preview">
+        <div class="edit-paste-hint" id="edit-paste-hint">
+          <span class="material-icons">content_paste</span>
+          <span>Click here, then paste (Ctrl/Cmd+V) a copied image</span>
+        </div>
+      </div>
+      <div class="input-group" id="edit-description-group">
+        <label for="edit-description" class="input-label">Description</label>
+        <textarea id="edit-description" class="modal-input" rows="4"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" id="reset-edit-btn">Reset to Original</button>
+      <button class="btn-primary" id="save-edit-btn">Save Changes</button>
+    </div>
+  </dialog>
+
+  <!-- Load script resources -->
+  <script src="mockData.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

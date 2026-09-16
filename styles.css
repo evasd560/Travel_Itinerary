@@ -1,0 +1,5416 @@
+/* ==========================================
+   Detour Design Style System
+   ========================================== */
+
+/* Import clean geometric typography as substitute for Airbnb Cereal */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  /* Pine green on warm cream */
+  --primary: #043f3a;             /* Deep pine — the brand colour */
+  --primary-active: #032c28;
+  --primary-soft: rgba(4, 63, 58, 0.08);
+  --primary-disabled: #bcd2cf;
+
+  /* A single blue accent, reserved for the primary export action */
+  --accent-blue: #1d5daa;
+  --accent-blue-active: #174a88;
+
+  --ink: #0d302c;                 /* Primary text — green-black */
+  --body: #3e514e;                /* Secondary text */
+  --muted: #7b8785;               /* Muted text */
+
+  --hairline: #e2ded4;            /* 1px borders, warmed */
+  --hairline-soft: #ece8df;
+  --border-strong: #cdc7ba;
+
+  --canvas: #ffffff;              /* Cards and panels */
+  --surface-soft: #f7f5ef;        /* Inset panels */
+  --surface-strong: #efece3;
+  --on-primary: #fdfcf8;
+  
+  /* Semantic visual differentiators (Airbnb accents) */
+  --color-visit: #4a6fa5;          /* Muted blue */
+  --color-visit-bg: rgba(74, 111, 165, 0.07);
+  
+  --color-dish: #a8566f;           /* Muted rose */
+  --color-dish-bg: rgba(168, 86, 111, 0.07);
+  
+  --color-eat: #9a7b2e;            /* Muted ochre */
+  --color-eat-bg: rgba(154, 123, 46, 0.07);
+  
+  --color-activity: #3d7d63;       /* Muted green */
+  --color-activity-bg: rgba(61, 125, 99, 0.07);
+
+  --color-shopping: #6f5f9e;       /* Muted violet */
+  --color-shopping-bg: rgba(111, 95, 158, 0.07);
+
+  --on-dark: #ffffff;
+
+  /* Fonts */
+  --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --page-bg: #f7f4ed;   /* Warm cream sheet the whole app sits on */
+  /* The tan dot from the Detour wordmark */
+  --brand-accent: #a1866f;   /* The tan dot in the wordmark */
+  --pin-ring: #c9a961;       /* Gold outline on the map pins */
+  --pin-fill: #fbf8f1;       /* Warm cream disc behind the emoji */
+  
+  /* Radii */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 32px;
+  --radius-full: 9999px;
+
+  /* Shadows (Airbnb single shadow tier) */
+  --shadow-airbnb: rgba(0, 0, 0, 0.02) 0 0 0 1px, 
+                    rgba(0, 0, 0, 0.04) 0 2px 6px 0, 
+                    rgba(0, 0, 0, 0.1) 0 4px 8px 0;
+  --transition: 0.2s cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* Override light/dark themes - Airbnb is pure white canvas */
+html, [data-theme="light"], [data-theme="dark"] {
+  --bg-app: var(--canvas);
+  --bg-sidebar: var(--surface-soft);
+  --bg-card: var(--canvas);
+  --bg-card-hover: var(--canvas);
+  --border-glass: var(--hairline);
+  --border-glass-focus: var(--ink);
+  --text-primary: var(--ink);
+  --text-secondary: var(--body);
+  --text-muted: var(--muted);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--page-bg);
+  color: var(--ink);
+  min-height: 100vh;
+  display: flex;
+  overflow: hidden;
+}
+
+/* Layout */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+  background-color: var(--page-bg);
+}
+
+.main-layout {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  gap: 1rem;
+  padding: 0 1rem 1rem;
+}
+
+.main-layout .main-content {
+  flex: 1;
+  min-width: 0;
+  background: var(--canvas);
+  border: 1px solid var(--hairline-soft);
+  border-radius: var(--radius-lg);
+}
+
+.main-layout .planner-sidebar {
+  flex: 0 0 340px;
+  min-width: 0;
+}
+
+@media (max-width: 992px) {
+  .app-container {
+    height: auto;
+    overflow-y: auto;
+  }
+  .main-layout {
+    flex-direction: column;
+  }
+  .main-layout .planner-sidebar {
+    flex: 1 1 auto;
+  }
+  body {
+    overflow-y: auto;
+  }
+}
+
+/* Top Navigation Bar */
+.top-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1rem 1.5rem;
+  background: transparent;
+  border-bottom: none;
+}
+
+.top-nav-left {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  min-width: 0;
+}
+
+.top-nav-search {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.top-nav-search .search-box-container {
+  max-width: none;
+  padding: 0.2rem 0.35rem 0.2rem 1rem;
+}
+
+.top-nav-search .search-input {
+  padding: 0.35rem 0.5rem 0.35rem 1.5rem;
+}
+
+.top-nav-search .search-btn {
+  height: 32px;
+  width: 32px;
+}
+
+.top-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-left: auto;
+}
+
+.trip-tabs {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  overflow-x: auto;
+}
+
+.trip-tab {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-full);
+  padding: 0.4rem 0.75rem;
+  font-family: var(--font-family);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--muted);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.trip-tab:hover {
+  background: var(--surface-soft);
+  color: var(--ink);
+}
+
+.trip-tab.active {
+  background: var(--surface-strong);
+  color: var(--ink);
+  font-weight: 600;
+}
+
+@media (max-width: 992px) {
+  .top-nav {
+    flex-wrap: wrap;
+    row-gap: 0.75rem;
+  }
+  .top-nav-search {
+    order: 3;
+    max-width: none;
+    width: 100%;
+    margin: 0;
+  }
+}
+
+/* Left Sidebar (Destinations panel) — currently unused, kept for reference */
+.sidebar {
+  background: var(--surface-soft);
+  border-right: 1px solid var(--hairline);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: var(--primary);
+}
+
+/* The supplied wordmark, when present */
+.brand-logo-img {
+  height: 30px;
+  width: auto;
+  display: block;
+  flex-shrink: 0;
+}
+
+/* An author display value beats the hidden attribute's UA rule, so restate it */
+.brand-logo-img[hidden],
+.brand-logo-text[hidden] {
+  display: none;
+}
+
+/* Typographic fallback: the same near-black serif and tan accent dot as the
+   wordmark, so the nav reads correctly before the image is in place. */
+.brand-logo-text {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.6rem;
+  letter-spacing: 0.2px;
+  color: var(--ink);
+  padding-left: 0.5rem;
+}
+
+.brand-dot {
+  position: absolute;
+  left: 0;
+  bottom: 0.32em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--brand-accent);
+}
+
+.menu-title {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--muted);
+  margin-bottom: 0.75rem;
+  font-weight: 700;
+}
+
+.menu-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  overflow-y: auto;
+  max-height: calc(100vh - 240px);
+}
+
+.menu-item button {
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-sm);
+  color: var(--ink);
+  font-family: var(--font-family);
+  font-size: 0.85rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  text-align: left;
+  transition: background var(--transition);
+}
+
+.menu-item button:hover {
+  background: var(--surface-strong);
+}
+
+.menu-item.active button {
+  background: var(--canvas);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  font-weight: 600;
+}
+
+.sidebar-footer {
+  border-top: 1px solid var(--hairline);
+  padding-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Compact circular icon button (Gemini key, collapse, etc.) */
+.icon-btn {
+  position: relative;
+  background: var(--canvas);
+  border: 1px solid var(--hairline);
+  color: var(--muted);
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+
+.icon-btn:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+/* Status dot: grey until a key is configured, then Rausch */
+.icon-btn-dot {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--border-strong);
+  border: 1.5px solid var(--canvas);
+}
+
+.icon-btn.active {
+  color: var(--ink);
+  border-color: var(--border-strong);
+}
+
+.icon-btn.active .icon-btn-dot {
+  background: var(--primary);
+}
+
+/* Primary "Add New" nav action */
+.btn-add-new {
+  background: var(--ink);
+  border: none;
+  color: var(--on-dark);
+  padding: 0.5rem 0.9rem;
+  border-radius: var(--radius-full);
+  font-family: var(--font-family);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  white-space: nowrap;
+  transition: opacity var(--transition);
+}
+
+.btn-add-new:hover {
+  opacity: 0.85;
+}
+
+/* Center main panel */
+.main-content {
+  padding: 2rem;
+  height: 100%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  background-color: var(--canvas);
+}
+
+/* Airbnb Pill Search Bar */
+.search-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.search-box-container {
+  position: relative;
+  width: 100%;
+  max-width: 640px;
+  display: flex;
+  align-items: center;
+  background: var(--canvas);
+  border: 1px solid var(--hairline);
+  box-shadow: var(--shadow-airbnb);
+  border-radius: var(--radius-full);
+  padding: 0.35rem 0.5rem 0.35rem 1.25rem;
+}
+
+.search-input {
+  flex-grow: 1;
+  background: transparent;
+  border: none;
+  color: var(--ink);
+  font-family: var(--font-family);
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0.5rem 0.5rem 0.5rem 1.5rem;
+}
+
+.search-input:focus {
+  outline: none;
+}
+
+.search-icon {
+  color: var(--ink);
+  position: absolute;
+  left: 1.25rem;
+  pointer-events: none;
+}
+
+.search-btn {
+  background: var(--primary); /* Rausch search button */
+  color: white;
+  border: none;
+  height: 38px;
+  width: 38px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background var(--transition);
+  font-size: 0;
+}
+
+.search-btn::before {
+  content: '';
+  display: block;
+  width: 14px;
+  height: 14px;
+  background: currentColor;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E") no-repeat center;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E") no-repeat center;
+}
+
+.search-btn:hover {
+  background: var(--primary-active);
+}
+
+.search-suggestions {
+  position: absolute;
+  top: 105%;
+  left: 0;
+  right: 0;
+  background: var(--canvas);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
+  list-style: none;
+  z-index: 100;
+  box-shadow: var(--shadow-airbnb);
+  display: none;
+  overflow: hidden;
+}
+
+.search-suggestions li {
+  padding: 0.75rem 1.25rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--ink);
+  transition: background var(--transition);
+}
+
+.search-suggestions li:hover {
+  background: var(--surface-soft);
+}
+
+/* ==========================================
+   Destination Hero (cover photo)
+   ========================================== */
+
+.city-hero {
+  margin-bottom: 0.25rem;
+  flex-shrink: 0;
+}
+
+.city-hero-media {
+  position: relative;
+  width: 100%;
+  min-height: 330px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: linear-gradient(135deg, #2b3d4f, #6a7b8c);
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: flex-end;
+}
+
+.city-hero-scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.65) 0%, rgba(0, 0, 0, 0.28) 45%, rgba(0, 0, 0, 0) 75%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.18) 0%, rgba(0, 0, 0, 0.42) 100%);
+}
+
+.city-hero-content {
+  position: relative;
+  padding: 2rem 2.25rem;
+  width: 100%;
+  max-width: 640px;
+}
+
+.city-eyebrow {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 0.4rem;
+}
+
+.city-title {
+  font-family: var(--font-display);
+  font-size: 3.2rem;
+  font-weight: 700;
+  color: var(--on-dark);
+  letter-spacing: -0.5px;
+  line-height: 1.02;
+  margin-bottom: 0.65rem;
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.3);
+}
+
+.city-description {
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 0.9rem;
+  line-height: 1.55;
+  max-width: 640px;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
+}
+
+.city-meta-pills {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 1.1rem;
+  flex-wrap: wrap;
+}
+
+.meta-pill {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.95);
+  padding: 0.55rem 1.1rem;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  backdrop-filter: blur(4px);
+}
+
+.cover-edit-btn {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.95);
+  border: none;
+  color: var(--ink);
+  padding: 0.6rem 1.6rem;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-airbnb);
+  transition: transform var(--transition);
+}
+
+.cover-edit-btn:hover {
+  transform: scale(1.04);
+}
+
+/* ==========================================
+   Anchor Chips (primary category filters)
+   ========================================== */
+
+.anchor-chips {
+  display: flex;
+  gap: 0.35rem;
+  overflow-x: auto;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--hairline-soft);
+}
+
+.anchor-chip {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  color: var(--muted);
+  padding: 0.8rem 1rem;
+  font-family: var(--font-family);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  transition: all var(--transition);
+}
+
+.anchor-chip .material-icons {
+  font-size: 20px;
+}
+
+.anchor-chip:hover {
+  color: var(--ink);
+}
+
+.anchor-chip.active {
+  color: var(--ink);
+  border-bottom-color: var(--ink);
+  font-weight: 700;
+}
+
+/* ==========================================
+   Secondary Filters (region / location / flags)
+   ========================================== */
+
+.filter-bar-secondary {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid var(--hairline-soft);
+  flex-shrink: 0;
+}
+
+/* Region + the flag toggles share the first row */
+.filter-row-top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  align-items: center;
+}
+
+.filter-group {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* Locations stay on one line and scroll sideways */
+#location-filter-bar {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  flex: 1;
+  min-width: 0;
+  padding-bottom: 0.15rem;
+  scrollbar-width: thin;
+}
+
+#location-filter-bar .filter-chip {
+  flex-shrink: 0;
+}
+
+#location-filter-bar .filter-group-label {
+  position: sticky;
+  left: 0;
+  background: var(--canvas);
+  padding-right: 0.2rem;
+  z-index: 1;
+}
+
+.filter-chip {
+  background: var(--surface-soft);
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  color: var(--muted);
+  padding: 0.28rem 0.7rem;
+  font-family: var(--font-family);
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--transition);
+}
+
+.filter-chip:hover {
+  color: var(--ink);
+  background: var(--surface-strong);
+}
+
+.filter-chip.active {
+  background: var(--canvas);
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+.filter-group-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--muted-soft, #929292);
+  margin-right: 0.1rem;
+}
+
+/* Clean Airbnb Todo List Grid (see section styles below) */
+
+
+/* TO-DO CHEKLIST ITEM CARD (photo-first, Airbnb property-card style) */
+.todo-row {
+  background: var(--canvas);
+  border: 1px solid var(--hairline-soft);
+  border-radius: var(--radius-md);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform var(--transition), box-shadow var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.todo-row:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-airbnb);
+}
+
+/* Floating Bookmark button */
+.bookmark-btn {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: var(--canvas);
+  border: 1px solid var(--hairline-soft);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--muted);
+  transition: all 0.2s ease;
+  z-index: 5;
+}
+
+.bookmark-btn:hover {
+  transform: scale(1.1);
+  color: var(--primary);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.bookmark-btn.active {
+  color: var(--primary);
+}
+
+/* Checkbox button */
+.todo-checkbox {
+  background: transparent;
+  border: 1.5px solid var(--border-strong);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition);
+}
+
+.todo-checkbox:hover {
+  border-color: var(--ink);
+  background-color: var(--surface-soft);
+}
+
+.todo-checkbox-inner {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--primary); /* Fills with Rausch on active */
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+
+.todo-checkbox.checked {
+  border-color: var(--primary);
+  background-color: rgba(4, 63, 58, 0.05);
+}
+
+.todo-checkbox.checked .todo-checkbox-inner {
+  opacity: 1;
+}
+
+/* One quiet meta line instead of a stack of badges */
+.todo-header-row {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-wrap: nowrap;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.todo-body {
+  padding: 0.8rem 0.85rem 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex-grow: 1;
+}
+
+.todo-main {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.todo-title {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--ink);
+  line-height: 1.35;
+}
+
+/* Category Badge visual differentiator styles */
+.todo-badge {
+  font-size: 0.64rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-full);
+}
+
+/* Apply specific colors for visual identification of categories */
+.todo-row[data-cat="visit"] .todo-badge {
+  background: var(--color-visit-bg);
+  color: var(--color-visit);
+}
+.todo-row[data-cat="dish"] .todo-badge {
+  background: var(--color-dish-bg);
+  color: var(--color-dish);
+}
+.todo-row[data-cat="eat"] .todo-badge {
+  background: var(--color-eat-bg);
+  color: var(--color-eat);
+}
+.todo-row[data-cat="activity"] .todo-badge {
+  background: var(--color-activity-bg);
+  color: var(--color-activity);
+}
+
+/* Clamped to two lines; click to open the rest */
+.todo-desc {
+  font-size: 0.76rem;
+  color: var(--body);
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.todo-desc.expanded {
+  -webkit-line-clamp: unset;
+  overflow: visible;
+}
+
+/* The pro tip is one tap away rather than always on the card */
+.todo-tip {
+  display: none;
+  font-size: 0.76rem;
+  color: var(--muted);
+  font-style: italic;
+  background: var(--surface-soft);
+  padding: 0.5rem 0.65rem;
+  border-radius: var(--radius-sm);
+  border-left: 2px solid var(--border-strong);
+  line-height: 1.45;
+}
+
+.todo-tip.open {
+  display: block;
+}
+
+.todo-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--hairline-soft);
+  margin-top: auto;
+}
+
+.todo-meta {
+  font-size: 0.74rem;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-weight: 600;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Compact icon actions (tip / notes) in the card footer */
+.todo-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+  margin-left: auto;
+}
+
+.card-icon-btn {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.card-icon-btn:hover {
+  background: var(--surface-strong);
+  color: var(--ink);
+}
+
+.card-icon-btn.active {
+  color: var(--primary);
+}
+
+.card-icon-btn .material-icons {
+  font-size: 16px;
+}
+
+/* Small circular flags for subcategory / socials, with tooltips */
+.meta-dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.62rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.meta-sep {
+  color: var(--hairline);
+  flex-shrink: 0;
+}
+
+.meta-text {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+/* Itinerary Planner Sidebar */
+.planner-sidebar {
+  background: var(--canvas);
+  border-left: 1px solid var(--hairline);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: 100%;
+  position: relative;
+}
+
+/* Drag the left edge to widen the planner */
+.planner-resize-handle {
+  position: absolute;
+  top: 0;
+  left: -3px;
+  width: 7px;
+  height: 100%;
+  cursor: col-resize;
+  z-index: 10;
+  background: transparent;
+  transition: background var(--transition);
+}
+
+.planner-resize-handle:hover,
+.planner-resize-handle.dragging {
+  background: var(--primary);
+  opacity: 0.35;
+}
+
+/* While dragging, don't let the pointer select text or hover cards */
+body.resizing-planner {
+  cursor: col-resize;
+  user-select: none;
+}
+
+body.resizing-planner .todo-row {
+  pointer-events: none;
+}
+
+.planner-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.planner-title {
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--ink);
+}
+
+.planner-duration-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--body);
+}
+
+/* Planner body wrapper (hidden when the panel is collapsed) */
+.planner-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/* Only the itinerary list/map flexes — every control keeps its height */
+.planner-body > *:not(.itinerary-list-container):not(.itinerary-map-container) {
+  flex-shrink: 0;
+}
+
+/* Trip duration — the headline planner control */
+.trip-duration-card {
+  background: var(--ink);
+  border-radius: var(--radius-md);
+  padding: 0.7rem 0.9rem;
+  display: flex;
+  align-items: stretch;
+  gap: 0.75rem;
+}
+
+.trip-card-left,
+.trip-card-right {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.trip-card-left {
+  align-items: flex-start;
+}
+
+.trip-card-right {
+  margin-left: auto;
+  align-items: flex-end;
+  text-align: right;
+  padding-left: 0.75rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.trip-duration-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.trip-duration-control {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stepper-btn {
+  background: rgba(255, 255, 255, 0.12);
+  border: none;
+  color: var(--on-dark);
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition);
+}
+
+.stepper-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.trip-duration-input {
+  background: transparent;
+  border: none;
+  color: var(--on-dark);
+  font-family: var(--font-family);
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+  width: 52px;
+  text-align: center;
+  outline: none;
+  -moz-appearance: textfield;
+}
+
+.trip-duration-input::-webkit-outer-spin-button,
+.trip-duration-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.trip-duration-unit {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* Segmented control (Day-wise / Week-wise, Add-New modes) */
+.segmented {
+  display: flex;
+  background: var(--surface-strong);
+  border-radius: var(--radius-full);
+  padding: 0.2rem;
+  gap: 0.15rem;
+}
+
+.segmented-full {
+  width: 100%;
+}
+
+.segmented-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-family: var(--font-family);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--transition);
+}
+
+.segmented-btn:hover {
+  color: var(--ink);
+}
+
+.segmented-btn.active {
+  background: var(--canvas);
+  color: var(--ink);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.09);
+}
+
+.plan-mode-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+/* Matches the other small caps labels in the planner (Duration, Dates, Region) */
+.plan-mode-label {
+  font-size: 0.64rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.plan-mode-row .segmented {
+  flex: 1;
+  min-width: 0;
+}
+
+/* List/Map toggle sits on its own line */
+.view-toggle-row {
+  display: flex;
+}
+
+/* Collapsed planner rail */
+.planner-rail {
+  flex: 0 0 46px;
+  background: var(--canvas);
+  border: none;
+  border-left: 1px solid var(--hairline);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.25rem 0;
+  color: var(--muted);
+  transition: background var(--transition);
+}
+
+.planner-rail:hover {
+  background: var(--surface-soft);
+  color: var(--ink);
+}
+
+.planner-rail-text {
+  writing-mode: vertical-rl;
+  font-family: var(--font-family);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.planner-rail-count {
+  background: var(--primary);
+  color: var(--on-primary);
+  font-size: 0.68rem;
+  font-weight: 700;
+  min-width: 20px;
+  height: 20px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 0.3rem;
+}
+
+/* Day selector tabs */
+.day-navigator {
+  display: flex;
+  gap: 0.25rem;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--hairline-soft);
+  padding-bottom: 0.25rem;
+}
+
+.day-tab {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  padding: 0.4rem 0.6rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--transition);
+}
+
+.day-tab:hover {
+  background: var(--surface-soft);
+  color: var(--ink);
+}
+
+.day-tab.active {
+  background: var(--surface-strong);
+  color: var(--ink);
+  font-weight: 700;
+}
+
+/* Itinerary tasks list (see updated rule at bottom of file) */
+
+
+.itinerary-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.8rem;
+  padding: 2rem;
+  border: 1.5px dashed var(--hairline);
+  border-radius: var(--radius-sm);
+  height: 100%;
+}
+
+/* Timeline layout: time-rail column + card content column */
+.itinerary-todo-row {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 0.5rem;
+  padding-bottom: 0.75rem;
+  position: relative;
+}
+
+.itinerary-todo-rail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.itinerary-todo-clock {
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: var(--muted);
+  white-space: nowrap;
+  margin-bottom: 0.3rem;
+}
+
+.itinerary-todo-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--primary);
+  box-shadow: 0 0 0 3px var(--color-visit-bg);
+  flex-shrink: 0;
+  z-index: 1;
+}
+
+.itinerary-todo-line {
+  position: absolute;
+  top: 1.35rem;
+  bottom: -0.75rem;
+  width: 2px;
+  background: var(--hairline);
+}
+
+.itinerary-todo-row:last-child .itinerary-todo-line {
+  display: none;
+}
+
+.itinerary-todo-card {
+  background: var(--canvas);
+  border: 1px solid var(--hairline-soft);
+  border-left: 3px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.75rem;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  min-width: 0;
+}
+
+.itinerary-todo-row[data-cat="visit"] { --border-color: var(--color-visit); }
+.itinerary-todo-row[data-cat="dish"] { --border-color: var(--color-dish); }
+.itinerary-todo-row[data-cat="eat"] { --border-color: var(--color-eat); }
+.itinerary-todo-row[data-cat="activity"] { --border-color: var(--color-activity); }
+
+.itinerary-todo-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.itinerary-todo-title {
+  font-weight: 600;
+  font-size: 0.82rem;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.itinerary-todo-meta {
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+
+.remove-itinerary-item-btn {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0.2rem;
+}
+
+.remove-itinerary-item-btn:hover {
+  color: var(--danger);
+}
+
+/* Footer Export Controls */
+.planner-controls-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.planner-btn-mini {
+  flex: 1;
+  background: var(--canvas);
+  border: 1px solid var(--hairline);
+  color: var(--ink);
+  padding: 0.55rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.planner-btn-mini:hover {
+  background: var(--surface-soft);
+  border-color: var(--ink);
+}
+
+.export-itinerary-btn {
+  flex: 1.5;
+  background: var(--primary); /* Rausch CTA */
+  color: white;
+  border: none;
+  padding: 0.55rem;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  transition: background var(--transition);
+}
+
+.export-itinerary-btn:hover {
+  background: var(--primary-active);
+}
+
+/* Clean Modals */
+dialog.glass-modal {
+  background: var(--canvas);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
+  color: var(--ink);
+  margin: auto;
+  padding: 1.5rem;
+  max-width: 450px;
+  width: 90%;
+  box-shadow: var(--shadow-airbnb);
+}
+
+dialog.glass-modal::backdrop {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.modal-title {
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.modal-close-btn {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.info-alert {
+  background: var(--surface-soft);
+  border: 1px solid var(--hairline);
+  color: var(--body);
+  padding: 0.75rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.info-alert a {
+  color: var(--primary);
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.input-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--body);
+}
+
+.modal-input {
+  background: var(--canvas);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.75rem;
+  color: var(--ink);
+  font-size: 0.85rem;
+}
+
+.modal-input:focus {
+  outline: none;
+  border-color: var(--ink);
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.btn-secondary {
+  background: var(--canvas);
+  border: 1px solid var(--hairline);
+  color: var(--ink);
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.btn-secondary:hover {
+  background: var(--surface-soft);
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.btn-primary:hover {
+  background: var(--primary-active);
+}
+
+/* Spinner */
+.loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 3rem;
+  grid-column: 1 / -1;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.spinner {
+  width: 28px;
+  height: 28px;
+  border: 2.5px solid var(--hairline);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ==========================================
+   Recommendation Category Sections
+   ========================================== */
+
+.recommendations-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.recommendation-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.recommendation-section-header {
+  padding-bottom: 0.5rem;
+}
+
+.recommendation-section-title {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.2px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* How many of this category are already in the itinerary — a quiet counter,
+   deliberately not a badge competing with the heading. */
+.section-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 21px;
+  height: 21px;
+  padding: 0 0.35rem;
+  border-radius: var(--radius-full);
+  background: var(--surface-strong);
+  color: var(--muted);
+  font-family: var(--font-family);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.recommendation-section-desc {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: 0.15rem;
+}
+
+.recommendation-section-list {
+  display: grid;
+  /* Below the cap, auto-fill steps down 3 → 2 → 1 as the window narrows */
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.15rem;
+}
+
+/* Four across is the ceiling: auto-fill alone would keep adding columns on a
+   wide monitor and shrink the cards past the point where the photo reads. */
+@media (min-width: 1300px) {
+  .recommendation-section-list {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* ==========================================
+   Zone Badge (Geographic Location Tag)
+   ========================================== */
+
+.zone-badge {
+  background: rgba(59, 130, 246, 0.07);
+  color: #2563eb;
+  border: 1px solid rgba(59, 130, 246, 0.18);
+  font-size: 0.64rem;
+  font-weight: 600;
+  padding: 0.12rem 0.5rem;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+
+/* Subcategory Badge (Historical, Cultural etc.) */
+.subcat-badge {
+  background: rgba(0, 0, 0, 0.04);
+  color: var(--muted);
+  font-size: 0.64rem;
+  font-weight: 600;
+  padding: 0.12rem 0.45rem;
+  border-radius: var(--radius-full);
+}
+
+/* ==========================================
+   Itinerary List: Zone Label per item
+   ========================================== */
+
+.itinerary-todo-zone {
+  font-size: 0.63rem;
+  font-weight: 600;
+  color: #2563eb;
+  background: rgba(59, 130, 246, 0.07);
+  border: 1px solid rgba(59, 130, 246, 0.18);
+  padding: 0.1rem 0.4rem;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 140px;
+}
+
+/* ==========================================
+   Planner sidebar max-height and overflow for summary box
+   ========================================== */
+
+.itinerary-list-container {
+  flex-grow: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 240px;
+}
+
+/* On a long trip the day rows must keep their height and let the list scroll,
+   rather than all shrinking to fit and collapsing into unreadable slivers. */
+.itinerary-list-container > * {
+  flex-shrink: 0;
+}
+
+/* Drag and Drop Reordering */
+.itinerary-todo-row {
+  cursor: grab;
+  user-select: none;
+  transition: transform 0.1s ease, box-shadow var(--transition);
+}
+
+.itinerary-todo-row:active {
+  cursor: grabbing;
+}
+
+.itinerary-todo-row.dragging {
+  opacity: 0.4;
+}
+
+.itinerary-todo-row.dragging .itinerary-todo-card {
+  border: 1.5px dashed var(--primary);
+  background: var(--surface-soft);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+/* ==========================================
+   Card Photo (Airbnb property-card photo plate)
+   ========================================== */
+
+.todo-photo {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  background: linear-gradient(135deg, var(--surface-strong), var(--surface-soft));
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.todo-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.todo-photo-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.75rem;
+  opacity: 0.4;
+}
+
+.todo-time-badge {
+  position: absolute;
+  top: 0.6rem;
+  left: 0.6rem;
+  background: var(--canvas);
+  color: var(--ink);
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.3rem 0.65rem;
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-airbnb);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  z-index: 2;
+}
+
+.todo-photo .bookmark-btn {
+  top: 0.6rem;
+  right: 0.6rem;
+}
+
+/* Selection lives top-left on the photo, as a square checkbox */
+.todo-select {
+  position: absolute;
+  top: 0.6rem;
+  left: 0.6rem;
+  z-index: 3;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  border: 2px solid var(--canvas);
+  background: rgba(0, 0, 0, 0.28);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.todo-select:hover {
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.todo-select .material-icons {
+  font-size: 17px;
+  color: var(--on-dark);
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+
+.todo-select.checked {
+  background: var(--primary);
+  border-color: var(--canvas);
+}
+
+.todo-select.checked .material-icons {
+  opacity: 1;
+}
+
+/* Duration sits at the right end of the chip line, inside the white card */
+.todo-duration-chip {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  background: var(--surface-strong);
+  color: var(--ink);
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.todo-duration-chip .material-icons {
+  font-size: 12px;
+}
+
+/* Zone chips get their own colour per region */
+.zone-chip {
+  font-size: 0.66rem;
+  font-weight: 700;
+  padding: 0.12rem 0.5rem;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+
+/* ------------------------------------------
+   Region colour families
+
+   Three Vietnam-drawn tones — the jade of the northern karst bays, the
+   imperial yellow of Hue and the Hoi An lanterns, the lacquer red of the
+   south — plus an indigo for the far-northern highlands. Every element
+   that belongs to a region (region chip, location chip, card badge)
+   reads from the same three custom properties.
+   ------------------------------------------ */
+
+[data-zone-family="north"] {
+  --zf-ink: #3f6b57;
+  --zf-rgb: 63, 107, 87;
+}
+[data-zone-family="central"] {
+  --zf-ink: #8a6a3a;
+  --zf-rgb: 138, 106, 58;
+}
+[data-zone-family="south"] {
+  --zf-ink: #9a5560;
+  --zf-rgb: 154, 85, 96;
+}
+[data-zone-family="highlands"] {
+  --zf-ink: #4f6285;
+  --zf-rgb: 79, 98, 133;
+}
+
+.zone-chip[data-zone-family] {
+  background: rgba(var(--zf-rgb), 0.10);
+  color: var(--zf-ink);
+  border-color: rgba(var(--zf-rgb), 0.24);
+}
+
+/* Region chips wear the family colour outright */
+#zone-filter-bar .filter-chip[data-zone-family] {
+  background: rgba(var(--zf-rgb), 0.10);
+  color: var(--zf-ink);
+  border-color: rgba(var(--zf-rgb), 0.3);
+}
+
+#zone-filter-bar .filter-chip[data-zone-family]:hover {
+  background: rgba(var(--zf-rgb), 0.18);
+}
+
+#zone-filter-bar .filter-chip[data-zone-family].active {
+  background: var(--zf-ink);
+  color: var(--on-dark);
+  border-color: var(--zf-ink);
+}
+
+/* Location chips sit a level down, so they take a lighter wash of the
+   same family — visibly related, never competing with the region row. */
+#location-filter-bar .filter-chip[data-zone-family] {
+  background: rgba(var(--zf-rgb), 0.05);
+  color: var(--zf-ink);
+  border-color: rgba(var(--zf-rgb), 0.16);
+}
+
+#location-filter-bar .filter-chip[data-zone-family]:hover {
+  background: rgba(var(--zf-rgb), 0.12);
+}
+
+#location-filter-bar .filter-chip[data-zone-family].active {
+  background: var(--zf-ink);
+  color: var(--on-dark);
+  border-color: var(--zf-ink);
+}
+
+/* ==========================================
+   Notes (browse cards + itinerary rows)
+   ========================================== */
+
+.notes-toggle {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  cursor: pointer;
+  padding: 0.2rem 0;
+  align-self: flex-start;
+  font-family: var(--font-family);
+}
+
+.notes-toggle .material-icons {
+  font-size: 15px;
+}
+
+.notes-toggle:hover {
+  color: var(--ink);
+}
+
+.notes-toggle.has-note {
+  color: var(--primary);
+}
+
+.notes-box {
+  display: none;
+}
+
+.notes-box.open {
+  display: block;
+}
+
+.notes-box textarea {
+  width: 100%;
+  resize: vertical;
+  min-height: 52px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.6rem;
+  font-family: var(--font-family);
+  font-size: 0.78rem;
+  color: var(--ink);
+  background: var(--surface-soft);
+  transition: all var(--transition);
+}
+
+.notes-box textarea:focus {
+  outline: none;
+  border-color: var(--ink);
+  background: var(--canvas);
+}
+
+.itinerary-todo-card .notes-toggle {
+  font-size: 0.68rem;
+  grid-column: 1 / -1;
+  margin-top: 0.35rem;
+}
+
+.itinerary-todo-card .notes-box {
+  grid-column: 1 / -1;
+}
+
+.itinerary-todo-card .notes-box textarea {
+  font-size: 0.72rem;
+  min-height: 44px;
+}
+
+/* ==========================================
+   Planner: start-time row + list/map view toggle
+   ========================================== */
+
+.planner-time-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  background: var(--surface-soft);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.75rem;
+}
+
+.planner-time-input {
+  background: var(--canvas);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+  padding: 0.25rem 0.35rem;
+  color: var(--ink);
+  font-size: 0.72rem;
+  font-weight: 500;
+  font-family: var(--font-family);
+  outline: none;
+}
+
+.planner-time-row {
+  flex-wrap: nowrap;
+  gap: 0.35rem;
+  padding: 0.5rem 0.6rem;
+}
+
+.planner-time-row .planner-duration-label {
+  font-size: 0.72rem;
+  white-space: nowrap;
+}
+
+.planner-time-row .planner-time-input {
+  flex: 1;
+  min-width: 0;
+}
+
+.view-toggle {
+  display: flex;
+  gap: 0.15rem;
+  background: var(--surface-strong);
+  border-radius: var(--radius-full);
+  padding: 0.2rem;
+  width: 100%;
+}
+
+.view-toggle-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  padding: 0.35rem 0.5rem;
+  border-radius: var(--radius-full);
+  font-family: var(--font-family);
+  font-size: 0.76rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.view-toggle-btn:hover {
+  color: var(--ink);
+}
+
+.view-toggle-btn.active {
+  background: var(--canvas);
+  color: var(--ink);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+/* ==========================================
+   Itinerary Map (Leaflet pins for the active day)
+   ========================================== */
+
+.itinerary-map-container {
+  flex-grow: 1;
+  min-height: 0;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--hairline);
+  background: var(--surface-soft);
+}
+
+.itinerary-map-container .leaflet-container {
+  width: 100%;
+  height: 100%;
+  font-family: var(--font-family);
+  background: var(--surface-soft);
+}
+
+.itinerary-map-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--muted);
+  font-size: 0.78rem;
+  text-align: center;
+  padding: 2rem 1.5rem;
+  gap: 0.5rem;
+}
+
+.itinerary-map-empty .material-icons {
+  font-size: 28px;
+  opacity: 0.4;
+}
+
+.map-pin-badge {
+  background: var(--primary);
+  color: var(--on-primary);
+  border-radius: 50% 50% 50% 0;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(-45deg);
+  box-shadow: var(--shadow-airbnb);
+  border: 2px solid var(--canvas);
+}
+
+.map-pin-badge span {
+  transform: rotate(45deg);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--on-primary);
+}
+
+.map-popup-title {
+  font-family: var(--font-family);
+  font-weight: 700;
+  font-size: 0.82rem;
+  color: var(--ink);
+  margin-bottom: 0.2rem;
+}
+
+.map-popup-meta {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+/* ==========================================
+   Card Edit Button + Edit Modal
+   ========================================== */
+
+.edit-btn {
+  position: absolute;
+  bottom: 0.6rem;
+  right: 0.6rem;
+  background: var(--canvas);
+  border: 1px solid var(--hairline-soft);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--muted);
+  transition: all 0.2s ease;
+  z-index: 5;
+}
+
+.edit-btn:hover {
+  transform: scale(1.1);
+  color: var(--ink);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.edit-btn.edited {
+  color: var(--primary);
+}
+
+.edit-paste-zone {
+  border: 1.5px dashed var(--hairline);
+  border-radius: var(--radius-md);
+  min-height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: text;
+  overflow: hidden;
+  transition: border-color var(--transition), background var(--transition);
+}
+
+.edit-paste-zone:focus {
+  outline: none;
+  border-color: var(--ink);
+  background: var(--surface-soft);
+}
+
+.edit-paste-hint {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+  text-align: center;
+  padding: 1rem;
+}
+
+.edit-paste-hint .material-icons {
+  font-size: 22px;
+  opacity: 0.6;
+}
+
+.edit-image-preview {
+  width: 100%;
+  max-height: 160px;
+  object-fit: cover;
+  display: block;
+}
+
+/* ==========================================
+   Add Custom Location (map view)
+   ========================================== */
+
+.map-add-location {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 0.5rem;
+}
+
+/* ==========================================
+   Active-hours overflow warning (timeline)
+   ========================================== */
+
+.itinerary-todo-row.overtime .itinerary-todo-clock {
+  color: var(--primary);
+}
+
+.itinerary-todo-row.overtime .itinerary-todo-dot {
+  background: var(--primary-active);
+}
+
+.itinerary-overtime-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.itinerary-overtime-badge .material-icons {
+  font-size: 12px;
+}
+
+.itinerary-todo-link {
+  color: var(--primary);
+  text-decoration: none;
+  font-size: 0.7rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+}
+
+.itinerary-todo-link .material-icons {
+  font-size: 12px;
+}
+
+/* ==========================================
+   Import from Link (modal results)
+   ========================================== */
+
+.import-results-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.import-candidate-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  border: 1px solid var(--hairline-soft);
+  border-radius: var(--radius-sm);
+  padding: 0.65rem 0.75rem;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+
+.import-candidate-row:hover {
+  background: var(--surface-soft);
+}
+
+.import-candidate-row input[type="checkbox"] {
+  margin-top: 0.3rem;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+
+.import-candidate-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.import-candidate-info strong {
+  font-size: 0.88rem;
+  color: var(--ink);
+}
+
+.import-candidate-info p {
+  font-size: 0.78rem;
+  color: var(--body);
+  line-height: 1.4;
+}
+
+.text-muted {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+/* ==========================================
+   Shopping category (new)
+   ========================================== */
+
+.todo-row[data-cat="shopping"] .todo-badge {
+  background: var(--color-shopping-bg);
+  color: var(--color-shopping);
+}
+
+.itinerary-todo-row[data-cat="shopping"] { --border-color: var(--color-shopping); }
+.itinerary-todo-row[data-cat="custom"] { --border-color: var(--border-strong); }
+
+/* "Must Visit" is now a curated flag, not a category label */
+.todo-badge.must-visit-badge {
+  background: var(--ink);
+  color: var(--on-dark);
+}
+
+/* ==========================================
+   Week-wise planning cards (no clock times)
+   ========================================== */
+
+.week-card {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: var(--canvas);
+  border: 1px solid var(--hairline-soft);
+  border-left: 3px solid var(--border-color, var(--border-strong));
+  border-radius: var(--radius-sm);
+  padding: 0.65rem 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Day re-assignment straight from the week view */
+select.week-day-select {
+  border: 1px solid var(--hairline);
+  font-family: var(--font-family);
+  cursor: pointer;
+  outline: none;
+  padding: 0.12rem 0.3rem;
+}
+
+select.week-day-select:focus {
+  border-color: var(--ink);
+}
+
+.week-card[data-cat="visit"] { --border-color: var(--color-visit); }
+.week-card[data-cat="dish"] { --border-color: var(--color-dish); }
+.week-card[data-cat="eat"] { --border-color: var(--color-eat); }
+.week-card[data-cat="activity"] { --border-color: var(--color-activity); }
+.week-card[data-cat="shopping"] { --border-color: var(--color-shopping); }
+
+.week-card.dragging {
+  opacity: 0.4;
+  border-style: dashed;
+}
+
+.week-card-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.week-card-title {
+  font-weight: 600;
+  font-size: 0.84rem;
+  color: var(--ink);
+  line-height: 1.3;
+}
+
+.week-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  font-size: 0.68rem;
+  color: var(--muted);
+}
+
+.week-day-chip {
+  background: var(--surface-strong);
+  color: var(--body);
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.1rem 0.45rem;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+
+.week-group-header {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--muted);
+  margin: 0.5rem 0 0.4rem;
+}
+
+/* ==========================================
+   Week sections (user-defined dividers)
+   ========================================== */
+
+.week-section-row {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.week-section {
+  margin-bottom: 0.85rem;
+}
+
+.week-section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.5rem;
+  background: var(--surface-soft);
+  border-left: 3px solid var(--ink);
+  border-radius: var(--radius-sm);
+  margin-bottom: 0.5rem;
+}
+
+.week-section-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.week-section-count {
+  font-size: 0.66rem;
+  font-weight: 600;
+  color: var(--muted);
+  background: var(--canvas);
+  padding: 0.1rem 0.4rem;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+
+.week-section-btn {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0.15rem;
+  display: flex;
+  align-items: center;
+  border-radius: var(--radius-sm);
+}
+
+.week-section-btn:hover {
+  color: var(--ink);
+  background: var(--surface-strong);
+}
+
+.week-section-empty {
+  font-size: 0.72rem;
+  color: var(--muted);
+  font-style: italic;
+  padding: 0.3rem 0 0.5rem 0.5rem;
+}
+
+select.week-section-select {
+  border: 1px solid var(--hairline);
+  font-family: var(--font-family);
+  cursor: pointer;
+  outline: none;
+  padding: 0.12rem 0.3rem;
+  max-width: 120px;
+}
+
+select.week-section-select:focus {
+  border-color: var(--ink);
+}
+
+/* ==========================================
+   Trip-length confirmation
+   ========================================== */
+
+.duration-confirm-text {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--body);
+}
+
+.duration-confirm-text strong {
+  color: var(--ink);
+}
+
+/* A multi-day trip that spills over from an earlier day */
+.multiday-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--surface-soft);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.75rem;
+  margin-bottom: 0.75rem;
+  color: var(--muted);
+}
+
+.multiday-banner div {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.multiday-banner strong {
+  font-size: 0.8rem;
+  color: var(--ink);
+}
+
+.multiday-banner span {
+  font-size: 0.7rem;
+}
+
+/* ==========================================
+   Planner map section (always visible)
+   ========================================== */
+
+.planner-map-section {
+  position: relative;
+  height: 155px;
+  flex-shrink: 0;
+}
+
+.planner-map-section .itinerary-map-container {
+  height: 100%;
+  flex-grow: 0;
+}
+
+.map-expand-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 500;
+  background: var(--canvas);
+  border: 1px solid var(--hairline);
+  color: var(--ink);
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-airbnb);
+  transition: transform var(--transition);
+}
+
+.map-expand-btn:hover {
+  transform: scale(1.06);
+}
+
+.map-addpin-btn {
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0.5rem;
+  z-index: 500;
+  background: var(--primary);
+  border: none;
+  color: var(--on-primary);
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-airbnb);
+  transition: transform var(--transition);
+}
+
+.map-addpin-btn:hover {
+  transform: scale(1.08);
+}
+
+.map-addpin-btn.active {
+  background: var(--ink);
+}
+
+/* Expanded map dialog */
+dialog.map-modal {
+  border: none;
+  border-radius: var(--radius-lg);
+  padding: 0;
+  width: 92vw;
+  height: 88vh;
+  max-width: 1400px;
+  background: var(--canvas);
+  box-shadow: var(--shadow-airbnb);
+  overflow: hidden;
+}
+
+dialog.map-modal::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.map-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.map-modal-body {
+  height: calc(100% - 60px);
+}
+
+.map-modal-body .itinerary-map-container {
+  height: 100%;
+  border: none;
+  border-radius: 0;
+}
+
+/* ==========================================
+   Travel dates + live happenings
+   ========================================== */
+
+.trip-dates-row {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding-top: 0.65rem;
+  margin-top: 0.15rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.trip-dates-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  white-space: nowrap;
+}
+
+.trip-date-input {
+  background: rgba(255, 255, 255, 0.12);
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--on-dark);
+  font-family: var(--font-family);
+  font-size: 0.72rem;
+  padding: 0.25rem 0.4rem;
+  outline: none;
+  color-scheme: dark;
+}
+
+.trip-dates-end {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.7);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.happenings-row {
+  display: flex;
+}
+
+.happenings-btn {
+  flex: 1;
+  background: linear-gradient(135deg, #fdf2f8, #eef2ff);
+  border: 1px solid #e9d5ff;
+  color: #6d28d9;
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.75rem;
+  font-family: var(--font-family);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  transition: all var(--transition);
+}
+
+.happenings-btn:hover:not(:disabled) {
+  border-color: #c4b5fd;
+}
+
+.happenings-btn:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+
+/* ==========================================
+   Seasonal / event cards — a distinct treatment
+   ========================================== */
+
+.anchor-chip-happening.active {
+  background: #6d28d9;
+  border-color: #6d28d9;
+}
+
+.todo-row[data-cat="happening"] {
+  border-color: #e9d5ff;
+  background: linear-gradient(180deg, #fdfaff 0%, var(--canvas) 55%);
+}
+
+.todo-row[data-cat="happening"] .todo-badge {
+  background: rgba(109, 40, 217, 0.09);
+  color: #6d28d9;
+}
+
+.todo-row[data-cat="happening"] .todo-photo {
+  aspect-ratio: 16 / 7;
+  background: linear-gradient(135deg, #ede9fe, #fce7f3);
+}
+
+.happening-date-badge {
+  position: absolute;
+  top: 0.6rem;
+  left: 0.6rem;
+  background: #6d28d9;
+  color: var(--on-dark);
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.3rem 0.65rem;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  box-shadow: var(--shadow-airbnb);
+  z-index: 2;
+}
+
+.happening-why {
+  font-size: 0.74rem;
+  color: #6d28d9;
+  background: rgba(109, 40, 217, 0.06);
+  border-radius: var(--radius-sm);
+  padding: 0.4rem 0.6rem;
+  line-height: 1.4;
+}
+
+.itinerary-todo-row[data-cat="happening"] { --border-color: #6d28d9; }
+.week-card[data-cat="happening"] { --border-color: #6d28d9; }
+
+/* ==========================================
+   Itinerary reflows to columns when there's room
+   ========================================== */
+
+/* Column count is set in JS from the panel's measured width, which keeps the
+   flex sizing chain intact (container-type would collapse the panel here). */
+.itinerary-list-container.cols-2,
+.itinerary-list-container.cols-3 {
+  display: grid;
+  gap: 0 0.75rem;
+  align-content: start;
+}
+
+.itinerary-list-container.cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.itinerary-list-container.cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* The timeline rail can't span columns, so the time moves onto the card itself */
+.cols-2 .itinerary-todo-row,
+.cols-3 .itinerary-todo-row {
+  grid-template-columns: 1fr;
+}
+
+.cols-2 .itinerary-todo-rail,
+.cols-3 .itinerary-todo-rail {
+  display: none;
+}
+
+.cols-2 .itinerary-clock-chip,
+.cols-3 .itinerary-clock-chip {
+  display: inline-flex;
+}
+
+/* Headers and banners always span the full width */
+.cols-2 > .week-section,
+.cols-3 > .week-section,
+.cols-2 > .week-group-header,
+.cols-3 > .week-group-header,
+.cols-2 > .multiday-banner,
+.cols-3 > .multiday-banner,
+.cols-2 > .itinerary-empty-state,
+.cols-3 > .itinerary-empty-state {
+  grid-column: 1 / -1;
+}
+
+/* Sections lay their own cards out in columns too */
+.cols-2 .week-section-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 0.75rem;
+}
+
+.cols-3 .week-section-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0 0.75rem;
+}
+
+.itinerary-clock-chip {
+  display: none;
+  align-items: center;
+  gap: 0.2rem;
+  background: var(--surface-strong);
+  color: var(--ink);
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.1rem 0.45rem;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+
+.itinerary-todo-row.overtime .itinerary-clock-chip {
+  background: rgba(4, 63, 58, 0.1);
+  color: var(--primary);
+}
+
+/* ==========================================
+   Modal form helpers
+   ========================================== */
+
+.form-row {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-end;
+}
+
+#add-manual-pane,
+#add-link-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+select.modal-input {
+  font-family: var(--font-family);
+  cursor: pointer;
+}
+
+textarea.modal-input {
+  font-family: var(--font-family);
+  resize: vertical;
+}
+
+
+/* ==========================================
+   Per-day hours (opt-in)
+   ========================================== */
+
+.day-hours-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.day-hours-add {
+  background: transparent;
+  border: 1px dashed var(--hairline);
+  color: var(--muted);
+  border-radius: var(--radius-full);
+  padding: 0.25rem 0.65rem;
+  font-family: var(--font-family);
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition: all var(--transition);
+}
+
+.day-hours-add:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+.day-hours-add .material-icons {
+  font-size: 13px;
+}
+
+.day-hours-clear {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 0.1rem;
+}
+
+.day-hours-clear:hover {
+  color: var(--primary);
+}
+
+
+/* ==========================================
+   Weather — collapsed chip, full outlook, per-item nudges
+   ========================================== */
+
+/* Discover Events and the weather chip share one line: the button takes the
+   space, the chip is a fixed square beside it, both the same height. */
+.planner-actions-row {
+  display: flex;
+  align-items: stretch;
+  gap: 0.5rem;
+}
+
+.planner-actions-row .happenings-row {
+  flex: 1;
+  min-width: 0;
+}
+
+.weather-chip-row {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.weather-chip {
+  position: relative;
+  width: 40px;
+  align-self: stretch;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--hairline);
+  background: var(--canvas);
+  color: var(--body);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.weather-chip:hover {
+  background: var(--surface-soft);
+  border-color: var(--hairline-strong, var(--hairline));
+}
+
+.weather-chip .material-icons {
+  font-size: 18px;
+}
+
+.weather-chip.loading {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* A dot in the corner carries the verdict, so the icon alone is enough */
+.weather-chip-dot {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1.5px solid var(--canvas);
+  background: transparent;
+}
+
+.weather-chip-dot[data-level="warn"] { background: #c2410c; }
+.weather-chip-dot[data-level="info"] { background: #1d4ed8; }
+.weather-chip-dot[data-level="good"] { background: #047857; }
+
+/* ---------- The outlook modal ---------- */
+
+.weather-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.weather-modal-intro {
+  font-size: 0.8rem;
+  color: var(--body);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.wx-row {
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 0.85rem;
+  background: var(--canvas);
+}
+
+.wx-row[data-level="warn"] { border-color: rgba(194, 65, 12, 0.32); background: #fffaf6; }
+.wx-row[data-level="info"] { border-color: rgba(29, 78, 216, 0.22); }
+
+.wx-row-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+}
+
+.wx-row-head .material-icons {
+  font-size: 20px;
+  margin-top: 1px;
+}
+
+.wx-row[data-level="warn"] .wx-row-head .material-icons { color: #c2410c; }
+.wx-row[data-level="info"] .wx-row-head .material-icons { color: #1d4ed8; }
+.wx-row[data-level="good"] .wx-row-head .material-icons { color: #047857; }
+
+.wx-row-head strong {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--ink);
+}
+
+.wx-row-dates {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.wx-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.wx-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.55rem 0.65rem;
+  border-radius: var(--radius-sm);
+  background: var(--surface-soft);
+}
+
+.wx-cell-label {
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--muted);
+}
+
+.wx-cell-main {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+.wx-cell-sub {
+  font-size: 0.7rem;
+  color: var(--body);
+}
+
+.wx-cell-empty {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.wx-verdict {
+  margin-top: 0.55rem;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--ink);
+}
+
+.wx-drift {
+  margin-top: 0.2rem;
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.weather-empty {
+  font-size: 0.82rem;
+  color: var(--muted);
+  padding: 0.5rem 0;
+}
+
+.weather-source {
+  font-size: 0.66rem;
+  color: var(--muted-soft, #929292);
+  line-height: 1.5;
+}
+
+/* ---------- Per-item nudge ---------- */
+
+.nudge-slot {
+  display: contents;
+}
+
+.weather-nudge-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-full);
+  border: 1px solid transparent;
+  cursor: pointer;
+  padding: 0;
+  transition: all var(--transition);
+}
+
+.weather-nudge-chip .material-icons {
+  font-size: 13px;
+}
+
+.weather-nudge-chip[data-level="warn"] {
+  background: rgba(194, 65, 12, 0.12);
+  color: #c2410c;
+  border-color: rgba(194, 65, 12, 0.28);
+}
+
+.weather-nudge-chip[data-level="info"] {
+  background: rgba(29, 78, 216, 0.1);
+  color: #1d4ed8;
+  border-color: rgba(29, 78, 216, 0.22);
+}
+
+.weather-nudge-chip:hover {
+  transform: scale(1.12);
+}
+
+/* On a collapsed day header this is a marker, not a control */
+.weather-nudge-chip.day-nudge {
+  cursor: default;
+  width: 18px;
+  height: 18px;
+}
+
+.weather-nudge-chip.day-nudge:hover {
+  transform: none;
+}
+
+.weather-nudge-chip.day-nudge .material-icons {
+  font-size: 12px;
+}
+
+.weather-nudge-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.nudge-severity {
+  display: flex;
+  gap: 0.55rem;
+  padding: 0.7rem 0.8rem;
+  border-radius: var(--radius-md);
+  background: var(--surface-soft);
+  border: 1px solid var(--hairline);
+}
+
+.nudge-severity[data-level="warn"] {
+  background: #fffaf6;
+  border-color: rgba(194, 65, 12, 0.3);
+}
+
+.nudge-severity .material-icons {
+  font-size: 20px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.nudge-severity[data-level="warn"] .material-icons { color: #c2410c; }
+.nudge-severity[data-level="info"] .material-icons { color: #1d4ed8; }
+
+.nudge-severity strong {
+  display: block;
+  font-size: 0.84rem;
+  color: var(--ink);
+  margin-bottom: 0.25rem;
+}
+
+.nudge-severity p {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: var(--body);
+}
+
+.nudge-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.nudge-action {
+  display: flex;
+  gap: 0.55rem;
+  align-items: flex-start;
+  font-size: 0.79rem;
+  line-height: 1.5;
+  color: var(--body);
+  padding: 0.6rem 0.7rem;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
+}
+
+.nudge-action .material-icons {
+  font-size: 17px;
+  color: var(--primary);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ==========================================
+   Itinerary item detail popup
+   ========================================== */
+
+.detail-photo {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: linear-gradient(135deg, var(--surface-strong), var(--surface-soft));
+  background-size: cover;
+  background-position: center;
+}
+
+.detail-close {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.75rem;
+  background: var(--canvas);
+  border-radius: var(--radius-full);
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-airbnb);
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.detail-body {
+  padding: 1.1rem 1.25rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  max-height: 55vh;
+  overflow-y: auto;
+}
+
+.detail-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
+}
+
+.detail-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.25;
+}
+
+.detail-desc {
+  font-size: 0.86rem;
+  line-height: 1.55;
+  color: var(--body);
+}
+
+.detail-note textarea {
+  width: 100%;
+  min-height: 60px;
+  resize: vertical;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.6rem;
+  font-family: var(--font-family);
+  font-size: 0.8rem;
+  color: var(--ink);
+  background: var(--surface-soft);
+}
+
+.detail-note textarea:focus {
+  outline: none;
+  border-color: var(--ink);
+  background: var(--canvas);
+}
+
+.detail-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--muted);
+}
+
+/* ==========================================
+   Week sections: drag targets + date range
+   ========================================== */
+
+.week-card {
+  cursor: grab;
+}
+
+.week-card:active {
+  cursor: grabbing;
+}
+
+.week-section.drop-target .week-section-header {
+  border-left-color: var(--primary);
+  background: rgba(4, 63, 58, 0.07);
+}
+
+.week-section.drop-target .week-section-cards {
+  outline: 2px dashed var(--primary);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+  min-height: 40px;
+}
+
+.week-section-range {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  font-size: 0.65rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.week-section-range select {
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+  background: var(--canvas);
+  font-family: var(--font-family);
+  font-size: 0.65rem;
+  padding: 0.05rem 0.2rem;
+  color: var(--ink);
+  cursor: pointer;
+  outline: none;
+}
+
+.itinerary-todo-card,
+.week-card-main {
+  cursor: pointer;
+}
+
+/* ==========================================
+   Card visuals aligned to the reference
+   ========================================== */
+
+.todo-row {
+  border-radius: 18px;
+  border-color: var(--hairline-soft);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.todo-row:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+/* Selection: square checkbox, top-left of the photo */
+.todo-select {
+  position: absolute;
+  top: 0.8rem;
+  left: 0.8rem;
+  right: auto;
+  z-index: 3;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 1.5px solid rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.28);
+  backdrop-filter: blur(3px);
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: all var(--transition);
+}
+
+.todo-select:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.todo-select .material-icons {
+  font-size: 18px;
+  color: var(--on-dark);
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+
+.todo-select.checked {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.todo-select.checked .material-icons {
+  opacity: 1;
+}
+
+/* Outlined badges above the title */
+.todo-header-row {
+  gap: 0.4rem;
+}
+
+.card-badge {
+  font-size: 0.59rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  padding: 0.2rem 0.45rem;
+  border-radius: 6px;
+  background: rgba(59, 130, 246, 0.08);
+  color: #1d4ed8;
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  white-space: nowrap;
+}
+
+.card-badge.must-visit-badge {
+  background: rgba(59, 130, 246, 0.08);
+  color: #1d4ed8;
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.card-badge.badge-social {
+  background: rgba(234, 88, 12, 0.08);
+  color: #c2410c;
+  border-color: rgba(234, 88, 12, 0.25);
+}
+
+/* Zone chips keep their per-region colour but match the badge shape */
+.todo-header-row .zone-chip {
+  font-size: 0.59rem;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  border-radius: 6px;
+  padding: 0.2rem 0.45rem;
+}
+
+/* Title with the heart alongside it */
+.todo-title-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+}
+
+.todo-title {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.todo-title-row .bookmark-btn {
+  position: static;
+  width: 26px;
+  height: 26px;
+  border: none;
+  box-shadow: none;
+  background: transparent;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.todo-title-row .bookmark-btn:hover {
+  transform: none;
+  box-shadow: none;
+  color: var(--primary);
+}
+
+/* Place · type · time, split by hairlines */
+.todo-metarow {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.7rem;
+  color: var(--muted);
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--hairline-soft);
+  flex-wrap: wrap;
+}
+
+.todo-metarow > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
+  white-space: nowrap;
+}
+
+.todo-metarow .material-icons {
+  font-size: 14px;
+  opacity: 0.75;
+}
+
+.metarow-sep {
+  width: 1px;
+  height: 12px;
+  background: var(--hairline);
+  display: inline-block !important;
+  padding: 0;
+}
+
+.metarow-tip {
+  margin-left: auto;
+}
+
+/* Tip reads as a soft callout */
+.todo-tipwrap:empty {
+  display: none;
+}
+
+.todo-tip {
+  background: #fdf6ec;
+  border-left: none;
+  border: 1px solid #f5e6cf;
+  border-radius: 10px;
+  color: #7c5a2a;
+  padding: 0.6rem 0.75rem;
+}
+
+/* Footer: price left, actions right */
+.todo-footer {
+  border-top: 1px solid var(--hairline-soft);
+  padding-top: 0.65rem;
+}
+
+.cost-main {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.cost-sub {
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.todo-meta {
+  font-weight: 500;
+  white-space: normal;
+}
+
+/* Filter chips */
+.filter-chip {
+  background: var(--surface-soft);
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  padding: 0.4rem 0.85rem;
+  font-size: 0.78rem;
+}
+
+.filter-chip.active {
+  background: var(--canvas);
+  border-color: var(--ink);
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.filter-group-label {
+  font-size: 0.66rem;
+  letter-spacing: 1px;
+}
+
+/* ==========================================
+   Itinerary panel aligned to the reference
+   ========================================== */
+
+.planner-sidebar {
+  background: var(--canvas);
+  border: 1px solid var(--hairline-soft);
+  border-left: 1px solid var(--hairline-soft);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+}
+
+.planner-title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+}
+
+.planner-header {
+  padding-bottom: 0.25rem;
+}
+
+.planner-map-section .itinerary-map-container {
+  border-radius: 14px;
+  border-color: var(--hairline-soft);
+}
+
+/* Search-style row under the map */
+.map-add-location {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.map-add-field {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: var(--canvas);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-full);
+  padding: 0.5rem 0.9rem;
+}
+
+.map-add-field .material-icons {
+  font-size: 17px;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.map-add-field input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--font-family);
+  font-size: 0.78rem;
+  color: var(--ink);
+}
+
+.map-add-submit {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--hairline);
+  background: var(--canvas);
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.map-add-submit:hover {
+  border-color: var(--ink);
+  background: var(--surface-soft);
+}
+
+/* Trip card: a light surface like every other panel, duration left, dates right.
+   The only colour is the day count itself, which is the number you actually read. */
+.trip-duration-card {
+  background: var(--canvas);
+  border: 1px solid var(--hairline);
+  border-radius: 14px;
+  padding: 0;
+  overflow: hidden;
+  align-items: stretch;
+  gap: 0;
+}
+
+.trip-card-left {
+  flex: 1;
+  padding: 0.8rem 0.95rem;
+  justify-content: center;
+}
+
+.trip-card-right {
+  margin-left: 0;
+  padding: 0.8rem 0.95rem;
+  border-left: 1px solid var(--hairline-soft);
+  background: var(--surface-soft);
+  justify-content: center;
+  min-width: 46%;
+}
+
+.trip-duration-label {
+  color: var(--muted);
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.7px;
+}
+
+.trip-card-right .trip-duration-label {
+  justify-content: flex-end;
+}
+
+.trip-duration-input {
+  color: var(--primary);
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.trip-duration-unit {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.stepper-btn {
+  background: var(--surface-strong);
+  color: var(--ink);
+  width: 26px;
+  height: 26px;
+  font-size: 0.95rem;
+}
+
+.stepper-btn:hover {
+  background: rgba(4, 63, 58, 0.12);
+  color: var(--primary);
+}
+
+.trip-date-input {
+  background: var(--canvas);
+  border: 1px solid var(--hairline);
+  color: var(--ink);
+  font-size: 0.74rem;
+  font-weight: 600;
+  padding: 0.28rem 0.4rem;
+  border-radius: 8px;
+  color-scheme: light;
+}
+
+.trip-dates-end {
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+/* Discover Events — on the page's own coral scale, not its own palette */
+.happenings-btn {
+  border-radius: var(--radius-full);
+  padding: 0.65rem 1rem;
+  font-size: 0.85rem;
+  background: rgba(4, 63, 58, 0.07);
+  border-color: rgba(4, 63, 58, 0.22);
+  color: var(--primary);
+}
+
+.happenings-btn:hover:not(:disabled) {
+  background: rgba(4, 63, 58, 0.13);
+  border-color: rgba(4, 63, 58, 0.35);
+}
+
+/* Day / Week segmented control */
+.segmented {
+  background: var(--surface-soft);
+  padding: 0.25rem;
+}
+
+.segmented-btn {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.82rem;
+}
+
+.plan-mode-row .segmented-btn.active {
+  background: var(--ink);
+  color: var(--on-dark);
+  box-shadow: none;
+}
+
+/* Day accordion rows */
+.day-acc {
+  border: 1px solid var(--hairline-soft);
+  border-radius: 12px;
+  margin-bottom: 0.6rem;
+  overflow: hidden;
+  background: var(--canvas);
+}
+
+.day-acc-head {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.7rem 0.85rem;
+  background: var(--surface-soft);
+  cursor: pointer;
+  transition: background var(--transition);
+}
+
+.day-acc-head:hover {
+  background: var(--surface-strong);
+}
+
+.day-acc.open .day-acc-head {
+  background: var(--canvas);
+  border-bottom: 1px solid var(--hairline-soft);
+}
+
+.day-acc-num {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.day-acc-date {
+  font-size: 0.78rem;
+  color: var(--muted);
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Same quiet circle as the section counts, so counts read consistently */
+.day-acc-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 19px;
+  height: 19px;
+  padding: 0 0.3rem;
+  font-size: 0.66rem;
+  font-weight: 700;
+  color: var(--muted);
+  background: var(--surface-strong);
+  border-radius: var(--radius-full);
+}
+
+.day-acc-chevron {
+  color: var(--muted);
+  display: flex;
+  transition: transform var(--transition);
+}
+
+.day-acc.open .day-acc-chevron {
+  transform: rotate(180deg);
+}
+
+.day-acc-body {
+  padding: 0.75rem 0.85rem 0.85rem;
+}
+
+/* Add-a-place affordance at the foot of a day */
+.day-add-place {
+  width: 100%;
+  background: transparent;
+  border: 1px dashed var(--hairline);
+  border-radius: 10px;
+  color: var(--muted);
+  padding: 0.6rem;
+  font-family: var(--font-family);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  transition: all var(--transition);
+}
+
+.day-add-place:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+/* Itinerary rows carry a thumbnail */
+.itinerary-todo-card {
+  gap: 0.6rem;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  border-radius: 10px;
+  padding: 0.55rem 0.6rem;
+}
+
+.itinerary-thumb {
+  width: 46px;
+  height: 46px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--surface-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.itinerary-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.itinerary-todo-title {
+  font-size: 0.86rem;
+  font-weight: 700;
+  white-space: normal;
+}
+
+.itinerary-todo-dot {
+  background: var(--primary);
+  box-shadow: 0 0 0 3px rgba(4, 63, 58, 0.15);
+}
+
+.itinerary-todo-line {
+  background: var(--hairline-soft);
+}
+
+.itinerary-todo-card .notes-toggle,
+.itinerary-todo-card .notes-box {
+  grid-column: 1 / -1;
+}
+
+/* Accordion shells always span the full width when items are gridded */
+.cols-2 > .day-acc,
+.cols-3 > .day-acc {
+  grid-column: 1 / -1;
+}
+
+.day-acc-body.cols-2,
+.day-acc-body.cols-3 {
+  display: grid;
+  gap: 0 0.75rem;
+  align-content: start;
+}
+
+.day-acc-body.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.day-acc-body.cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+.day-acc-body.cols-2 > .day-hours-row,
+.day-acc-body.cols-3 > .day-hours-row,
+.day-acc-body.cols-2 > .multiday-banner,
+.day-acc-body.cols-3 > .multiday-banner,
+.day-acc-body.cols-2 > .day-add-place,
+.day-acc-body.cols-3 > .day-add-place,
+.day-acc-body.cols-2 > .week-section-empty,
+.day-acc-body.cols-3 > .week-section-empty {
+  grid-column: 1 / -1;
+}
+
+/* Trip tabs read as a location pill */
+.trip-tab {
+  border: 1px solid var(--hairline);
+  background: var(--canvas);
+  padding: 0.5rem 0.9rem;
+  font-size: 0.85rem;
+}
+
+.trip-tab.active {
+  background: var(--canvas);
+  border-color: var(--border-strong);
+  color: var(--ink);
+  font-weight: 700;
+}
+
+/* Search bar sits flush without the round button */
+.top-nav-search {
+  max-width: 620px;
+}
+
+.search-box-container {
+  border-radius: var(--radius-full);
+  box-shadow: none;
+  border-color: var(--hairline);
+}
+
+.top-nav-search .search-btn {
+  display: none;
+}
+
+.icon-btn {
+  width: 40px;
+  height: 40px;
+}
+
+/* ==========================================
+   Explore / Plan modes
+
+   The two panes stop being side-by-side columns and become full-width views,
+   switched by a floating pill at the bottom of the screen.
+   ========================================== */
+
+.app-container[data-view="explore"] .planner-sidebar,
+.app-container[data-view="plan"] .main-content {
+  display: none;
+}
+
+/* Whichever pane is showing takes the whole width */
+.app-container[data-view="explore"] .main-layout .main-content,
+.app-container[data-view="plan"] .main-layout .planner-sidebar {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+}
+
+/* Full-width Plan doesn't need the drag handle, the collapse button or the
+   collapsed rail — those exist only for the narrow docked sidebar. */
+.app-container[data-view="plan"] .planner-resize-handle,
+.app-container[data-view="plan"] .planner-collapse-btn,
+.app-container[data-view="plan"] .planner-rail {
+  display: none;
+}
+
+.app-container[data-view="plan"] .planner-sidebar {
+  border-left: none;
+}
+
+/* The footer band now sits under the floating switch, so the panels only need
+   a little breathing room rather than the full height of the switch. */
+.app-container .main-content,
+.app-container .planner-body {
+  padding-bottom: 1rem;
+}
+
+/* In Plan the map is the focus: it leads the view at a much larger size */
+.app-container[data-view="plan"] .planner-map-section {
+  height: clamp(260px, 38vh, 420px);
+}
+
+/* The planner's controls read better as a centred column at full width, and the
+   header has to share the same measure so the title lines up with the map. */
+.app-container[data-view="plan"] .planner-body,
+.app-container[data-view="plan"] .planner-header {
+  max-width: 1080px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* ---------- The floating switch ---------- */
+
+.view-switch {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 900;
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.3rem;
+  border-radius: var(--radius-full);
+  background: var(--ink);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22), 0 2px 6px rgba(0, 0, 0, 0.14);
+}
+
+.view-switch-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1.15rem;
+  border: none;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: var(--font-family);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.1px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--transition);
+}
+
+.view-switch-btn:hover {
+  color: var(--on-dark);
+}
+
+.view-switch-btn.active {
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+.view-switch-btn .material-icons {
+  font-size: 18px;
+}
+
+/* How many stops are planned, so Explore still shows the itinerary filling up */
+.view-switch-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 19px;
+  height: 19px;
+  padding: 0 0.32rem;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.18);
+  color: var(--on-dark);
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.view-switch-btn.active .view-switch-count {
+  background: rgba(0, 0, 0, 0.22);
+  color: var(--on-primary);
+}
+
+.view-switch-count[data-empty="true"] {
+  display: none;
+}
+
+@media (max-width: 992px) {
+  .view-switch {
+    bottom: 1rem;
+  }
+}
+
+/* ==========================================
+   Plan view split: itinerary and map side by side
+
+   DOM order is map-first so the mobile stack needs no reordering. On desktop
+   flex `order` puts the itinerary on the left and the map on the right.
+   ========================================== */
+
+.plan-split {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  flex: 1;
+  min-height: 0;
+}
+
+.plan-map-col,
+.plan-main-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* Mobile / narrow: map on top, everything else beneath it */
+.plan-split-handle {
+  display: none;
+}
+
+@media (min-width: 993px) {
+  .plan-split {
+    flex-direction: row;
+    align-items: stretch;
+    gap: 0;
+  }
+
+  .plan-main-col {
+    order: 1;
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 0.2rem;
+  }
+
+  .plan-split-handle {
+    order: 2;
+    display: block;
+    flex: 0 0 11px;
+    align-self: stretch;
+    cursor: col-resize;
+    position: relative;
+  }
+
+  /* A hairline that thickens into the accent colour while dragging */
+  .plan-split-handle::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 5px;
+    width: 1px;
+    background: var(--hairline);
+    transition: background var(--transition), width var(--transition);
+  }
+
+  .plan-split-handle:hover::before,
+  .plan-split-handle.dragging::before {
+    background: var(--primary);
+    width: 3px;
+    left: 4px;
+  }
+
+  .plan-map-col {
+    order: 3;
+    /* Width is driven from JS and persisted; this is the first-run default */
+    flex: 0 0 var(--plan-map-width, 420px);
+  }
+
+  /* Side by side the map fills its column's full height rather than a fixed band */
+  .app-container[data-view="plan"] .plan-map-col .planner-map-section {
+    height: auto;
+    flex: 1;
+    min-height: 260px;
+  }
+
+  /* The centred measure is for the stacked layout; side by side wants the room */
+  .app-container[data-view="plan"] .planner-body,
+  .app-container[data-view="plan"] .planner-header {
+    max-width: 1400px;
+  }
+}
+
+/* While dragging the split, don't let the pointer select text */
+body.resizing-split {
+  cursor: col-resize;
+  user-select: none;
+}
+
+/* ==========================================
+   Source chip — where an imported item came from
+   ========================================== */
+
+.source-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  align-self: flex-start;
+  padding: 0.22rem 0.55rem 0.22rem 0.4rem;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-full);
+  background: var(--surface-soft);
+  color: var(--body);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1px;
+  text-decoration: none;
+  max-width: 100%;
+  transition: all var(--transition);
+}
+
+.source-chip:hover {
+  background: var(--canvas);
+  border-color: var(--hairline-strong, var(--muted));
+  color: var(--ink);
+}
+
+.source-chip svg {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+}
+
+.source-chip span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Banner above the extracted results, naming the platform */
+.import-source-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.75rem;
+  margin-bottom: 0.6rem;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
+  background: var(--surface-soft);
+  font-size: 0.78rem;
+  color: var(--body);
+  line-height: 1.4;
+}
+
+.import-source-banner svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.import-source-banner strong {
+  color: var(--ink);
+}
+
+/* ==========================================
+   Map pins: category emoji + day tag
+   ========================================== */
+
+/* A round white pin carrying the category emoji. Bottom-centre is the anchor,
+   so the small tail below the circle points at the actual coordinate. */
+.map-pin-emoji {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--canvas);
+  border: 2px solid var(--primary);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.map-pin-emoji span {
+  /* Pin the emoji font explicitly so the glyph looks the same across platforms
+     instead of inheriting the page's Latin stack. */
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji",
+    "Twemoji Mozilla", sans-serif;
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* The little tail that touches the coordinate */
+.map-pin-emoji::after {
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 7px solid var(--primary);
+}
+
+.leaflet-marker-icon:hover .map-pin-emoji {
+  border-color: var(--ink);
+}
+
+.leaflet-marker-icon:hover .map-pin-emoji::after {
+  border-top-color: var(--ink);
+}
+
+/* Day tag — a permanent tooltip, kept quiet so pins stay the focus */
+.leaflet-tooltip.map-day-tag {
+  background: rgba(34, 34, 34, 0.82);
+  border: none;
+  border-radius: var(--radius-full);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.28);
+  color: #fff;
+  font-family: var(--font-family);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  padding: 0.1rem 0.4rem;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* Leaflet draws a caret on tooltips; the tag reads cleaner without one */
+.leaflet-tooltip.map-day-tag::before {
+  display: none;
+}
+
+/* ==========================================
+   Planner rows: duration band and the plan-by band
+   ========================================== */
+
+/* The split refactor moved these out of .planner-body, so the flex-shrink rule
+   that used to protect them no longer applied and the cards collapsed. */
+.plan-main-col > * {
+  flex-shrink: 0;
+}
+
+/* Duration + dates, with the date-dependent CTAs alongside them */
+.trip-row {
+  display: flex;
+  align-items: stretch;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.trip-row .trip-duration-card {
+  flex: 1 1 320px;
+  min-width: 0;
+}
+
+.trip-row .planner-actions-row {
+  flex: 0 1 auto;
+  align-items: stretch;
+}
+
+/* Give the card a floor so its two stacked rows always fit */
+.trip-duration-card {
+  min-height: 86px;
+}
+
+.trip-card-left,
+.trip-card-right {
+  justify-content: center;
+  min-height: 0;
+}
+
+/* The stepper is the widest thing in the left pane, so the pane has to be
+   allowed to size to it rather than the two panes splitting evenly. */
+.trip-card-left {
+  flex: 0 0 auto;
+}
+
+.trip-card-right {
+  flex: 1 1 auto;
+}
+
+.trip-duration-control {
+  flex-shrink: 0;
+}
+
+/* Discover Events shrinks to a comfortable width beside the card rather than
+   stretching across the panel */
+.trip-row .happenings-btn {
+  padding: 0.65rem 0.9rem;
+  height: 100%;
+}
+
+/* Plan-by tabs on the left, itinerary actions on the right */
+.plan-mode-row {
+  flex-wrap: wrap;
+}
+
+.plan-mode-row .segmented {
+  flex: 1 1 200px;
+}
+
+.plan-mode-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+
+.plan-mode-actions .planner-btn-mini {
+  white-space: nowrap;
+}
+
+/* Export is the primary action on this row, so it keeps its filled treatment */
+.plan-mode-actions .export-itinerary-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  white-space: nowrap;
+}
+
+@media (max-width: 560px) {
+  .plan-mode-actions {
+    width: 100%;
+    margin-left: 0;
+  }
+  .plan-mode-actions .export-itinerary-btn {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
+/* ==========================================
+   Compact trip bar + grouped actions
+   ========================================== */
+
+.trip-row {
+  align-items: center;
+}
+
+/* Duration and dates on one line, with a rule between them */
+.trip-duration-card {
+  min-height: 0;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.9rem;
+  padding: 0.5rem 0.85rem;
+}
+
+.trip-bar-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.trip-bar-dates {
+  flex: 1 1 auto;
+}
+
+.trip-bar-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.trip-bar-label .material-icons {
+  font-size: 14px;
+}
+
+.trip-bar-divider {
+  width: 1px;
+  align-self: stretch;
+  min-height: 26px;
+  background: var(--hairline);
+  flex-shrink: 0;
+}
+
+.trip-duration-card .trip-duration-input {
+  font-size: 1.15rem;
+  width: 40px;
+}
+
+.trip-duration-card .stepper-btn {
+  width: 24px;
+  height: 24px;
+  font-size: 0.9rem;
+}
+
+.trip-duration-card .trip-duration-unit {
+  font-size: 0.68rem;
+}
+
+.trip-duration-card .trip-dates-end {
+  font-size: 0.68rem;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* All four CTAs sit together to the right of the trip bar */
+.planner-actions-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.trip-row .planner-actions-row {
+  flex: 0 1 auto;
+  align-items: center;
+}
+
+.actions-divider {
+  width: 1px;
+  height: 22px;
+  background: var(--hairline);
+  flex-shrink: 0;
+}
+
+.trip-row .happenings-btn {
+  height: auto;
+  padding: 0.5rem 0.8rem;
+  font-size: 0.78rem;
+}
+
+.trip-row .weather-chip {
+  width: 34px;
+  height: 34px;
+  align-self: center;
+}
+
+.planner-actions-row .export-itinerary-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  white-space: nowrap;
+}
+
+/* The plan-by row is back to just its tabs */
+.plan-mode-row .segmented {
+  flex: 1 1 auto;
+}
+
+@media (max-width: 700px) {
+  .trip-row {
+    align-items: stretch;
+  }
+  .trip-row .planner-actions-row {
+    width: 100%;
+  }
+  .planner-actions-row .happenings-row {
+    flex: 1 1 auto;
+  }
+  .planner-actions-row .export-itinerary-btn {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+}
+
+/* ==========================================
+   Day pin checkbox in the accordion header
+   ========================================== */
+
+.day-pin-toggle {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.day-pin-toggle input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.day-pin-box {
+  width: 16px;
+  height: 16px;
+  border-radius: 5px;
+  border: 1.5px solid var(--hairline-strong, #c9c9c9);
+  background: var(--canvas);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition);
+}
+
+.day-pin-box .material-icons {
+  font-size: 12px;
+  color: var(--on-primary);
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+
+.day-pin-toggle input:checked + .day-pin-box {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.day-pin-toggle input:checked + .day-pin-box .material-icons {
+  opacity: 1;
+}
+
+.day-pin-toggle input:focus-visible + .day-pin-box {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Days with nothing mapped keep the row aligned */
+.day-pin-spacer {
+  width: 16px;
+  flex-shrink: 0;
+}
+
+/* ==========================================
+   Map key — an old chart's legend cartouche
+   ========================================== */
+
+/* Matches the other map controls: same size, radius, border and shadow */
+.map-legend-btn {
+  position: absolute;
+  bottom: 0.5rem;
+  left: 0.5rem;
+  z-index: 500;
+  background: var(--canvas);
+  border: 1px solid var(--hairline);
+  color: var(--ink);
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-airbnb);
+  transition: transform var(--transition), background var(--transition), color var(--transition);
+}
+
+.map-legend-btn:hover {
+  transform: scale(1.06);
+}
+
+.map-legend-btn.active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--on-dark);
+}
+
+/* The key is just another card from the page's system */
+.map-legend {
+  position: absolute;
+  bottom: 2.8rem;
+  left: 0.5rem;
+  z-index: 600;
+  width: 214px;
+  max-width: calc(100% - 1rem);
+  background: var(--canvas);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-airbnb);
+  color: var(--ink);
+}
+
+.map-legend[hidden] {
+  display: none;
+}
+
+.map-legend-inner {
+  padding: 0.7rem 0.8rem;
+}
+
+/* Same small-caps label style as Duration, Dates, Plan by and Region */
+.map-legend-title {
+  font-family: var(--font-family);
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.map-legend-rule {
+  height: 1px;
+  margin: 0.45rem 0 0.5rem;
+  background: var(--hairline-soft);
+}
+
+.map-legend-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.map-legend-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.75rem;
+}
+
+.legend-glyph {
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji",
+    "Twemoji Mozilla", sans-serif;
+  font-size: 14px;
+  line-height: 1;
+  width: 18px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* The fallback pin, drawn small enough to sit in the key */
+.legend-glyph-pin {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 15px;
+  height: 15px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  background: var(--primary);
+}
+
+.legend-glyph-pin span {
+  transform: rotate(45deg);
+  font-size: 8px;
+  font-weight: 700;
+  color: var(--on-primary);
+}
+
+.legend-dots {
+  display: none;
+}
+
+.legend-label {
+  font-family: var(--font-family);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--body);
+  white-space: nowrap;
+}
+
+.map-legend-foot {
+  margin-top: 0.5rem;
+  padding-top: 0.45rem;
+  border-top: 1px solid var(--hairline-soft);
+  font-family: var(--font-family);
+  font-size: 0.62rem;
+  color: var(--muted);
+}
+
+/* The CTA cluster now lives on the plan-by line, not the trip bar */
+.trip-row {
+  flex-wrap: nowrap;
+}
+
+.trip-row .trip-duration-card {
+  flex: 1 1 auto;
+}
+
+.plan-mode-row .planner-actions-row {
+  margin-left: auto;
+  flex: 0 1 auto;
+}
+
+.plan-mode-row .segmented {
+  flex: 0 1 240px;
+}
+
+.plan-mode-row .happenings-btn {
+  padding: 0.45rem 0.75rem;
+  font-size: 0.76rem;
+}
+
+.plan-mode-row .weather-chip {
+  width: 32px;
+  height: 32px;
+}
+
+.plan-mode-row .export-itinerary-btn {
+  padding: 0.45rem 0.8rem;
+  font-size: 0.78rem;
+}
+
+@media (max-width: 860px) {
+  .plan-mode-row .planner-actions-row {
+    width: 100%;
+    margin-left: 0;
+  }
+  .plan-mode-row .segmented {
+    flex: 1 1 auto;
+  }
+}
+
+@media (max-width: 560px) {
+  .trip-row {
+    flex-wrap: wrap;
+  }
+  .trip-duration-card {
+    width: 100%;
+  }
+}
+
+/* Keep the CTA labels on one line; the tab group yields space instead */
+.plan-mode-row .happenings-btn {
+  white-space: nowrap;
+}
+
+.plan-mode-row .happenings-row {
+  flex: 0 0 auto;
+}
+
+.plan-mode-row .segmented {
+  flex: 0 1 190px;
+  min-width: 120px;
+}
+
+/* Card type was tuned for a 248px column; at ~320px it can breathe again */
+.todo-title {
+  font-size: 1.2rem;
+}
+
+.todo-desc {
+  font-size: 0.79rem;
+}
+
+.todo-metarow {
+  font-size: 0.72rem;
+  gap: 0.5rem;
+}
+
+.card-badge,
+.todo-header-row .zone-chip {
+  font-size: 0.61rem;
+}
+
+.cost-main {
+  font-size: 0.83rem;
+}
+
+.todo-body {
+  padding: 0.85rem 0.95rem 0.9rem;
+}
+
+/* ==========================================
+   Pine-on-cream skin
+
+   Everything below re-points surfaces that were tuned for the old palette:
+   the dark chrome becomes pine, the panels warm, and the one blue accent is
+   reserved for Export so the primary action still stands apart.
+   ========================================== */
+
+/* ---------- Page chrome ---------- */
+
+.brand-logo-text {
+  color: var(--primary);
+}
+
+.brand-dot {
+  background: var(--brand-accent);
+}
+
+/* Search reads as a floating pill on the cream ground */
+.search-box-container {
+  background: var(--canvas);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-airbnb);
+}
+
+.search-input {
+  background: transparent;
+}
+
+.btn-add-new {
+  background: var(--primary);
+  color: var(--on-primary);
+  border-color: var(--primary);
+}
+
+.btn-add-new:hover {
+  background: var(--primary-active);
+  border-color: var(--primary-active);
+}
+
+.icon-btn {
+  background: var(--canvas);
+  border: 1px solid var(--hairline);
+  color: var(--primary);
+}
+
+.icon-btn:hover {
+  background: var(--surface-soft);
+}
+
+/* The panels are warm white cards floating on cream */
+.main-layout .main-content,
+.main-layout .planner-sidebar {
+  border-color: var(--hairline);
+}
+
+/* ---------- Headings ---------- */
+
+.planner-title,
+.recommendation-section-title {
+  color: var(--ink);
+}
+
+/* The hero title sits on a photo scrim, so it stays light regardless of theme */
+.city-title,
+.city-description,
+.city-eyebrow {
+  color: var(--on-dark);
+}
+
+/* ---------- Controls that used to be black ---------- */
+
+.plan-mode-row .segmented-btn.active,
+.segmented-btn.active {
+  background: var(--primary);
+  color: var(--on-primary);
+  box-shadow: none;
+}
+
+.segmented {
+  background: var(--surface-strong);
+}
+
+.trip-duration-input {
+  color: var(--primary);
+}
+
+.stepper-btn:hover {
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+/* Discover Events: quiet outlined pill, matching the mockup */
+.happenings-btn {
+  background: var(--canvas);
+  border-color: var(--hairline);
+  color: var(--ink);
+}
+
+.happenings-btn:hover:not(:disabled) {
+  background: var(--surface-soft);
+  border-color: var(--border-strong);
+}
+
+.happenings-btn .material-icons {
+  color: var(--accent-blue);
+}
+
+.planner-btn-mini {
+  background: var(--canvas);
+  border-color: var(--hairline);
+  color: var(--ink);
+}
+
+.planner-btn-mini:hover {
+  background: var(--surface-soft);
+}
+
+/* Export is the one blue thing on the page */
+.export-itinerary-btn {
+  background: var(--accent-blue);
+  color: #fff;
+}
+
+.export-itinerary-btn:hover {
+  background: var(--accent-blue-active);
+}
+
+/* ---------- Cards ---------- */
+
+.todo-select.checked {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.day-pin-toggle input:checked + .day-pin-box {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.day-acc.open,
+.itinerary-todo-row {
+  border-left-color: var(--primary);
+}
+
+/* ---------- Map ---------- */
+
+.map-pin-emoji {
+  background: var(--primary);
+  border-color: var(--canvas);
+}
+
+.map-pin-emoji::after {
+  border-top-color: var(--primary);
+}
+
+.leaflet-marker-icon:hover .map-pin-emoji {
+  border-color: var(--brand-accent);
+}
+
+.leaflet-marker-icon:hover .map-pin-emoji::after {
+  border-top-color: var(--primary-active);
+}
+
+.map-pin-badge {
+  background: var(--primary);
+  border-color: var(--canvas);
+}
+
+.leaflet-tooltip.map-day-tag {
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+/* Both map affordances become filled pine circles */
+.map-addpin-btn {
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+.map-addpin-btn.active {
+  background: var(--primary-active);
+}
+
+.map-legend-btn {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--on-primary);
+  border-radius: var(--radius-full);
+}
+
+.map-legend-btn.active {
+  background: var(--primary-active);
+  border-color: var(--primary-active);
+}
+
+.legend-glyph-pin {
+  background: var(--primary);
+}
+
+/* ---------- Floating view switch ---------- */
+
+.view-switch {
+  background: var(--canvas);
+  border: 1px solid var(--hairline);
+  box-shadow: 0 8px 26px rgba(4, 47, 43, 0.14), 0 2px 6px rgba(4, 47, 43, 0.08);
+}
+
+.view-switch-btn {
+  color: var(--muted);
+}
+
+.view-switch-btn:hover {
+  color: var(--ink);
+}
+
+.view-switch-btn.active {
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+.view-switch-count {
+  background: var(--surface-strong);
+  color: var(--body);
+}
+
+.view-switch-btn.active .view-switch-count {
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--on-primary);
+}
+
+/* ---------- Filter chips ---------- */
+
+.anchor-chip.active {
+  color: var(--ink);
+  border-bottom-color: var(--primary);
+}
+
+.filter-chip.active,
+.toggle-chip.active {
+  background: var(--primary);
+  color: var(--on-primary);
+  border-color: var(--primary);
+}
+
+.bookmark-btn.active {
+  color: var(--primary);
+}
+
+}
+
+/* ==========================================
+   Reference-matched details
+   ========================================== */
+
+/* Region chips read as quiet tints rather than saturated colour blocks */
+.zone-chip[data-zone-family] {
+  background: rgba(var(--zf-rgb), 0.07);
+  border-color: rgba(var(--zf-rgb), 0.18);
+}
+
+/* The blue accent carries the Discover Events label too, as in the reference */
+.happenings-btn {
+  color: var(--accent-blue);
+  font-weight: 700;
+}
+
+.happenings-btn:hover:not(:disabled) {
+  border-color: var(--accent-blue);
+}
+
+/* The panels sit as warm sheets on the cream ground, not stark white */
+.main-layout .main-content,
+.main-layout .planner-sidebar {
+  background: #fffefb;
+}
+
+/* Nav icons pick up the ink rather than staying neutral grey */
+.top-nav .material-icons {
+  color: inherit;
+}
+
+.search-icon {
+  color: var(--muted);
+}
+
+/* Selection ticks and checkboxes take the deeper pine */
+.todo-select.checked,
+.day-pin-toggle input:checked + .day-pin-box,
+.filter-chip.active,
+.toggle-chip.active,
+.view-switch-btn.active,
+.segmented-btn.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--on-primary);
+}
+
+/* Trip tab pill in the nav */
+.trip-tab.active {
+  background: var(--canvas);
+  border-color: var(--border-strong);
+  color: var(--ink);
+}
+
+
+
+/* ==========================================
+   Map pins: cream disc, gold outline, green day tag
+   ========================================== */
+
+.map-pin-emoji {
+  background: var(--pin-fill);
+  border: 2px solid var(--pin-ring);
+  box-shadow: 0 2px 7px rgba(4, 47, 43, 0.3);
+}
+
+/* The tail carries the outline colour so the pin reads as one piece */
+.map-pin-emoji::after {
+  border-top-color: var(--pin-ring);
+  bottom: -7px;
+  border-left-width: 5px;
+  border-right-width: 5px;
+  border-top-width: 8px;
+}
+
+.leaflet-marker-icon:hover .map-pin-emoji {
+  border-color: var(--primary);
+  background: var(--canvas);
+}
+
+.leaflet-marker-icon:hover .map-pin-emoji::after {
+  border-top-color: var(--primary);
+}
+
+/* The numbered fallback follows the same cream-and-gold treatment */
+.map-pin-badge {
+  background: var(--pin-fill);
+  border-color: var(--pin-ring);
+}
+
+.map-pin-badge span {
+  color: var(--primary);
+}
+
+/* The day tag stays the green pill from the reference */
+.leaflet-tooltip.map-day-tag {
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+/* Legend's fallback mark mirrors the pin */
+.legend-glyph-pin {
+  background: var(--pin-fill);
+  border: 1.5px solid var(--pin-ring);
+}
+
+.legend-glyph-pin span {
+  color: var(--primary);
+}
+
+/* ==========================================
+   Planner toolbar: a deliberate two-state layout
+
+   Wide  — Duration │ Dates on one line; tabs and CTAs on the next.
+   Compact — each group takes its own full-width row, the vertical rules
+   become horizontal ones, and nothing is left dangling mid-air.
+   ========================================== */
+
+/* ---- Wide state polish ---- */
+
+.trip-duration-card {
+  gap: 0.5rem 1rem;
+  padding: 0.55rem 0.9rem;
+  align-items: center;
+}
+
+/* Duration sizes to its content; dates take the remaining room */
+.trip-bar-group {
+  flex: 0 0 auto;
+}
+
+.trip-bar-dates {
+  flex: 1 1 auto;
+  gap: 0.55rem;
+}
+
+.trip-bar-divider {
+  min-height: 24px;
+  margin: 0 0.1rem;
+}
+
+/* The end-date reading is secondary, so it yields first when space is tight */
+.trip-duration-card .trip-dates-end {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.plan-mode-row {
+  align-items: center;
+  gap: 0.6rem;
+}
+
+/* ---- Compact state ---- */
+
+.plan-main-col.compact .trip-duration-card {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  padding: 0;
+}
+
+.plan-main-col.compact .trip-bar-group {
+  flex: 1 1 auto;
+  padding: 0.55rem 0.9rem;
+  justify-content: flex-start;
+}
+
+/* The rule between the two groups turns from vertical to horizontal.
+   width:auto would resolve against the row's max-content size and overhang the
+   card, so pin it to the container and let it shrink. */
+.plan-main-col.compact .trip-bar-divider {
+  width: 100%;
+  min-width: 0;
+  flex: 0 0 1px;
+  height: 1px;
+  min-height: 0;
+  align-self: stretch;
+  margin: 0;
+}
+
+.plan-main-col.compact .trip-bar-label {
+  flex: 0 0 68px;
+}
+
+/* Tabs and CTAs each take a full row, both aligned to the left edge */
+.plan-main-col.compact .plan-mode-row {
+  flex-wrap: wrap;
+}
+
+.plan-main-col.compact .plan-mode-row .segmented {
+  flex: 1 1 auto;
+}
+
+.plan-main-col.compact .planner-actions-row {
+  width: 100%;
+  margin-left: 0;
+  justify-content: flex-start;
+}
+
+.plan-main-col.compact .planner-actions-row .happenings-row {
+  flex: 1 1 auto;
+}
+
+.plan-main-col.compact .happenings-btn {
+  width: 100%;
+  justify-content: center;
+}
+
+.plan-main-col.compact .planner-actions-row .export-itinerary-btn {
+  flex: 1 1 auto;
+  justify-content: center;
+}
