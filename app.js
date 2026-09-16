@@ -1230,6 +1230,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!state.currentCity) return "";
     const custom = state.cityCovers[cityKeyFor(state.currentCity)];
     if (custom) return custom;
+    if (state.currentCity.coverImage) return state.currentCity.coverImage;
     // Fall back to the first item that has a photo, so the hero always looks intentional
     const withImage = (state.currentCity.items || []).find(i => i.image);
     return withImage ? withImage.image : "";
